@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Adventures - Complete Learning Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { min-height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); font-family: 'Nunito', sans-serif; color: #fff; overflow-x: hidden; }
+        .bg-bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .bubble { position: absolute; border-radius: 50%; animation: float 15s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-30px) rotate(10deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+        .container { max-width: 1100px; margin: 0 auto; padding: 25px 20px; position: relative; z-index: 1; }
+        
+        /* Navigation */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .logo { font-family: 'Pacifico', cursive; font-size: 1.8rem; background: linear-gradient(135deg, #4ECDC4, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
+        .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-tab { background: rgba(255,255,255,0.1); border: none; border-radius: 20px; padding: 10px 18px; color: #fff; cursor: pointer; font-weight: 700; font-size: 13px; transition: all 0.3s; font-family: 'Nunito', sans-serif; }
+        .nav-tab:hover, .nav-tab.active { background: linear-gradient(135deg, #4ECDC4, #44A08D); }
+        
+        /* Views */
+        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        
+        /* Dashboard */
+        .dashboard-header { text-align: center; margin-bottom: 30px; }
+        .dashboard-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
+        .dashboard-header p { color: rgba(255,255,255,0.7); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border-radius: 18px; padding: 22px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card .stat-icon { font-size: 35px; margin-bottom: 8px; }
+        .stat-card .stat-value { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #4ECDC4, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .stat-label { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; }
+        .section-box { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1); }
+        .section-box h2 { margin-bottom: 20px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 12px; height: 24px; overflow: hidden; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #4ECDC4, #44A08D, #FF6B6B); border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-weight: 700; font-size: 12px; min-width: 40px; transition: width 0.5s; }
+        .lesson-progress-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; }
+        .lesson-progress-item .lp-icon { font-size: 26px; width: 40px; text-align: center; }
+        .lesson-progress-item .lp-info { flex: 1; }
+        .lesson-progress-item .lp-name { font-weight: 700; font-size: 14px; }
+        .mini-progress { background: rgba(255,255,255,0.1); border-radius: 8px; height: 6px; margin-top: 5px; overflow: hidden; }
+        .mini-progress-fill { height: 100%; background: linear-gradient(90deg, #4ECDC4, #44A08D); border-radius: 8px; }
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+        .achievement { background: rgba(255,255,255,0.05); border-radius: 14px; padding: 18px; text-align: center; border: 2px solid transparent; transition: all 0.3s; }
+        .achievement.unlocked { border-color: #4ECDC4; background: rgba(78,205,196,0.1); }
+        .achievement.locked { opacity: 0.4; filter: grayscale(1); }
+        .achievement .ach-icon { font-size: 35px; margin-bottom: 8px; }
+        .achievement .ach-name { font-weight: 700; font-size: 12px; }
+        
+        /* Lessons Grid */
+        .lessons-header { text-align: center; margin-bottom: 25px; }
+        .lessons-header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .category-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; }
+        .cat-tab { background: rgba(255,255,255,0.1); border: none; border-radius: 18px; padding: 8px 16px; color: #fff; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.3s; font-family: 'Nunito', sans-serif; }
+        .cat-tab:hover, .cat-tab.active { background: #4ECDC4; color: #1a1a2e; }
+        .lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+        .lesson-card { background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border-radius: 18px; padding: 22px; cursor: pointer; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+        .lesson-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .lesson-card .lc-icon { font-size: 40px; margin-bottom: 10px; }
+        .lesson-card h3 { font-size: 1.15rem; font-weight: 800; }
+        .lesson-card .lc-subtitle { color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 3px; }
+        .lesson-card .lc-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); }
+        .lesson-card .lc-meta span { display: flex; align-items: center; gap: 4px; }
+        .lesson-card .card-progress { margin-top: 12px; background: rgba(255,255,255,0.1); border-radius: 8px; height: 5px; overflow: hidden; }
+        .lesson-card .card-progress-fill { height: 100%; background: linear-gradient(90deg, #4ECDC4, #44A08D); border-radius: 8px; }
+        .lesson-card .completed-badge { position: absolute; top: 12px; right: 12px; background: #27ae60; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+        .lesson-card .difficulty { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.15); border-radius: 8px; padding: 3px 9px; font-size: 10px; font-weight: 700; }
+        .lesson-card .difficulty.beginner { color: #4ECDC4; }
+        .lesson-card .difficulty.intermediate { color: #F39C12; }
+        .lesson-card .difficulty.advanced { color: #FF6B6B; }
+        
+        /* Vocabulary View */
+        .vocab-search { max-width: 450px; margin: 0 auto 25px; position: relative; }
+        .vocab-search input { width: 100%; padding: 14px 18px 14px 45px; border: none; border-radius: 22px; background: rgba(255,255,255,0.1); color: #fff; font-size: 15px; font-family: 'Nunito', sans-serif; }
+        .vocab-search input::placeholder { color: rgba(255,255,255,0.5); }
+        .vocab-search .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 16px; }
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+        .vocab-card { background: rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 12px; transition: all 0.3s; cursor: pointer; }
+        .vocab-card:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); }
+        .vocab-card .vc-audio { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #4ECDC4, #44A08D); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: transform 0.2s; border: none; flex-shrink: 0; }
+        .vocab-card .vc-audio:hover { transform: scale(1.1); }
+        .vocab-card .vc-audio.playing { animation: pulse 0.5s ease infinite; }
+        .vocab-card .vc-text { flex: 1; }
+        .vocab-card .vc-en { font-weight: 700; font-size: 1rem; }
+        .vocab-card .vc-es { color: rgba(255,255,255,0.6); font-size: 13px; }
+        .vocab-card .vc-ph { color: #FF6B6B; font-size: 11px; font-family: monospace; margin-top: 2px; }
+        
+        /* Lesson Detail */
+        .lesson-detail-header { background: linear-gradient(135deg, rgba(78,205,196,0.2), rgba(68,160,141,0.1)); border-radius: 20px; padding: 22px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .back-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 10px; padding: 10px 14px; color: #fff; cursor: pointer; font-size: 16px; transition: all 0.2s; }
+        .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .ld-info { display: flex; align-items: center; gap: 12px; }
+        .ld-info .ld-icon { font-size: 42px; }
+        .ld-info h2 { font-size: 1.3rem; }
+        .ld-info p { color: rgba(255,255,255,0.6); font-size: 13px; }
+        .score-badge { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 14px; font-weight: 700; }
+        .lesson-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .lesson-tab { background: rgba(255,255,255,0.1); border: none; border-radius: 14px; padding: 10px 20px; color: #fff; cursor: pointer; font-weight: 700; font-size: 13px; transition: all 0.3s; font-family: 'Nunito', sans-serif; }
+        .lesson-tab:hover, .lesson-tab.active { background: linear-gradient(135deg, #4ECDC4, #44A08D); }
+        .lesson-content { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 22px; min-height: 380px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Conversation */
+        .toggle-bar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .toggle-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 18px; padding: 7px 14px; color: #fff; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.2s; font-family: 'Nunito', sans-serif; }
+        .toggle-btn.active { background: #4ECDC4; color: #1a1a2e; }
+        .speed-ctrl { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); border-radius: 18px; padding: 5px 12px; }
+        .speed-ctrl label { font-size: 11px; color: rgba(255,255,255,0.7); }
+        .speed-ctrl select { background: rgba(255,255,255,0.15); border: none; border-radius: 8px; padding: 3px 6px; color: #fff; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .speed-ctrl select option { background: #1a1a2e; }
+        .chat-area { height: 320px; overflow-y: auto; padding: 18px; background: rgba(0,0,0,0.2); border-radius: 18px; margin-bottom: 18px; }
+        .chat-area::-webkit-scrollbar { width: 6px; }
+        .chat-area::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
+        .chat-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .message { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; animation: slideIn 0.4s ease; }
+        .message.user { flex-direction: row-reverse; animation: slideInRight 0.4s ease; }
+        .avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+        .avatar.c1 { background: #4ECDC4; }
+        .avatar.c2 { background: #FF6B6B; }
+        .avatar.c3 { background: #9B59B6; }
+        .avatar.c4 { background: #F39C12; }
+        .avatar.you { background: #3498DB; }
+        .msg-bubble { max-width: 72%; background: rgba(255,255,255,0.1); border-radius: 16px 16px 16px 4px; padding: 12px 16px; }
+        .message.user .msg-bubble { background: linear-gradient(135deg, #3498DB, #2980b9); border-radius: 16px 16px 4px 16px; }
+        .msg-content { display: flex; align-items: flex-start; gap: 10px; }
+        .msg-text { flex: 1; }
+        .msg-bubble .english { font-size: 0.95rem; line-height: 1.45; font-weight: 600; }
+        .msg-bubble .spanish { margin-top: 8px; font-size: 0.82rem; color: rgba(255,255,255,0.7); font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; display: none; }
+        .msg-bubble .spanish.show { display: block; }
+        .msg-bubble .phonetic { margin-top: 5px; font-size: 0.78rem; color: #FF6B6B; font-family: monospace; display: none; }
+        .msg-bubble .phonetic.show { display: block; }
+        .audio-btns { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+        .audio-btn { width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.2s; }
+        .audio-btn.en { background: linear-gradient(135deg, #3498DB, #2980b9); }
+        .audio-btn.es { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .audio-btn:hover { transform: scale(1.1); }
+        .audio-btn.playing { animation: pulse 0.5s ease infinite; }
+        .typing-indicator { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .typing-indicator .dots { background: rgba(255,255,255,0.1); border-radius: 16px 16px 16px 4px; padding: 12px 20px; display: flex; gap: 4px; }
+        .typing-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: typing 1s infinite; }
+        .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+        .response-area { background: rgba(0,0,0,0.2); border-radius: 18px; padding: 18px; }
+        .response-area .prompt { margin-bottom: 12px; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option-btn { background: rgba(255,255,255,0.08); border: none; border-radius: 14px; padding: 12px 16px; color: #fff; cursor: pointer; text-align: left; transition: all 0.3s; font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 12px; }
+        .option-btn:hover:not(:disabled) { transform: translateX(6px); background: rgba(255,255,255,0.14); }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .option-btn.correct { background: linear-gradient(135deg, #27ae60, #2ecc71); opacity: 1 !important; }
+        .option-btn.incorrect { background: linear-gradient(135deg, #c0392b, #e74c3c); animation: shake 0.4s; opacity: 1 !important; }
+        .opt-text { flex: 1; }
+        .option-btn .opt-en { font-weight: 700; font-size: 0.9rem; }
+        .option-btn .opt-es { margin-top: 3px; font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+        .opt-audio-btns { display: flex; gap: 4px; flex-shrink: 0; }
+        .opt-audio-btn { width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.2s; }
+        .opt-audio-btn.en { background: rgba(52,152,219,0.8); }
+        .opt-audio-btn.es { background: rgba(231,76,60,0.8); }
+        .opt-audio-btn:hover { transform: scale(1.1); }
+        .feedback-bar { padding: 16px 20px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+        .feedback-bar.correct { background: linear-gradient(135deg, rgba(39,174,96,0.3), rgba(46,204,113,0.2)); }
+        .feedback-bar.incorrect { background: linear-gradient(135deg, rgba(192,57,43,0.3), rgba(231,76,60,0.2)); }
+        .feedback-bar .fb-content { display: flex; align-items: center; gap: 10px; }
+        .feedback-bar .fb-icon { font-size: 24px; }
+        .feedback-bar .fb-text { font-weight: 700; font-size: 0.95rem; }
+        .continue-btn { background: linear-gradient(135deg, #4ECDC4, #44A08D); border: none; border-radius: 14px; padding: 10px 20px; color: #fff; cursor: pointer; font-weight: 700; font-size: 0.9rem; font-family: 'Nunito', sans-serif; transition: transform 0.2s; }
+        .continue-btn:hover { transform: scale(1.05); }
+        
+        /* Vocabulary Tab */
+        .lesson-vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .lv-card { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 10px; }
+        .lv-card .lv-play { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #4ECDC4, #44A08D); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 14px; transition: transform 0.2s; }
+        .lv-card .lv-play:hover { transform: scale(1.1); }
+        .lv-card .lv-info { flex: 1; }
+        .lv-card .lv-en { font-weight: 700; font-size: 0.95rem; }
+        .lv-card .lv-es { color: rgba(255,255,255,0.6); font-size: 12px; }
+        
+        /* Exercises */
+        .exercise-box { background: rgba(0,0,0,0.2); border-radius: 18px; padding: 22px; }
+        .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .ex-header h3 { display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+        .ex-progress { color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; }
+        .ex-question { font-size: 1.1rem; margin-bottom: 18px; line-height: 1.5; }
+        .ex-question .blank { background: rgba(78,205,196,0.3); padding: 2px 18px; border-radius: 4px; border-bottom: 2px solid #4ECDC4; }
+        .ex-hint { color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 14px; }
+        .ex-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 18px; }
+        .ex-option { background: rgba(255,255,255,0.08); border: 2px solid transparent; border-radius: 12px; padding: 14px 18px; color: #fff; cursor: pointer; text-align: center; transition: all 0.3s; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.95rem; }
+        .ex-option:hover:not(:disabled) { border-color: #4ECDC4; background: rgba(78,205,196,0.1); }
+        .ex-option:disabled { cursor: not-allowed; }
+        .ex-option.correct { background: #27ae60; border-color: #27ae60; }
+        .ex-option.incorrect { background: #c0392b; border-color: #c0392b; animation: shake 0.4s; }
+        .ex-option.show-correct { border-color: #27ae60; background: rgba(39,174,96,0.3); }
+        .match-container { display: flex; gap: 25px; flex-wrap: wrap; }
+        .match-col { flex: 1; min-width: 180px; }
+        .match-col h4 { margin-bottom: 12px; color: rgba(255,255,255,0.7); font-size: 13px; }
+        .match-item { background: rgba(255,255,255,0.08); border: 2px solid transparent; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.9rem; }
+        .match-item:hover { border-color: rgba(255,255,255,0.3); }
+        .match-item.selected { border-color: #4ECDC4; background: rgba(78,205,196,0.2); }
+        .match-item.matched { background: #27ae60; border-color: #27ae60; cursor: default; }
+        .match-item.wrong { animation: shake 0.4s; border-color: #e74c3c; }
+        .ex-feedback { padding: 14px 18px; border-radius: 12px; margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+        .ex-feedback.correct { background: rgba(39,174,96,0.2); }
+        .ex-feedback.incorrect { background: rgba(192,57,43,0.2); }
+        .ex-nav { display: flex; justify-content: space-between; margin-top: 18px; }
+        .ex-nav-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 10px 18px; color: #fff; cursor: pointer; font-weight: 700; font-family: 'Nunito', sans-serif; transition: all 0.2s; font-size: 0.9rem; }
+        .ex-nav-btn:hover { background: rgba(255,255,255,0.2); }
+        .ex-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .ex-nav-btn.primary { background: linear-gradient(135deg, #4ECDC4, #44A08D); }
+        
+        .hidden { display: none !important; }
+        @media (max-width: 600px) {
+            .nav-bar { flex-direction: column; align-items: stretch; }
+            .nav-tabs { justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-card .stat-value { font-size: 1.8rem; }
+            .lesson-detail-header { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-bubbles" id="bgBubbles"></div>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="logo" onclick="showView('dashboard')">English Adventures</div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showView('dashboard')" id="navDash">📊 Dashboard</button>
+                <button class="nav-tab" onclick="showView('lessons')" id="navLess">📚 Lecciones</button>
+                <button class="nav-tab" onclick="showView('vocab')" id="navVocab">📝 Vocabulario</button>
+            </div>
+        </nav>
+
+        <!-- Dashboard View -->
+        <div class="view active" id="dashboardView">
+            <div class="dashboard-header">
+                <h1>¡Bienvenido! 👋</h1>
+                <p>Tu progreso de aprendizaje • Your learning progress</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value" id="statLessons">0</div><div class="stat-label">Lecciones Completadas</div></div>
+                <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-value" id="statVocab">0</div><div class="stat-label">Palabras Aprendidas</div></div>
+                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-value" id="statScore">0%</div><div class="stat-label">Puntuación Promedio</div></div>
+                <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-value" id="statStreak">0</div><div class="stat-label">Días de Racha</div></div>
+            </div>
+            <div class="section-box">
+                <h2>📈 Progreso General</h2>
+                <div class="progress-bar"><div class="progress-fill" id="overallProgress" style="width: 0%">0%</div></div>
+                <div id="lessonProgressList"></div>
+            </div>
+            <div class="section-box">
+                <h2>🏅 Logros • Achievements</h2>
+                <div class="achievements-grid" id="achievementsGrid"></div>
+            </div>
+        </div>
+
+        <!-- Lessons View -->
+        <div class="view" id="lessonsView">
+            <div class="lessons-header">
+                <h1>📚 Lecciones • Lessons</h1>
+                <p>Elige una lección para comenzar</p>
+            </div>
+            <div class="category-tabs">
+                <button class="cat-tab active" onclick="filterLessons('all', this)">Todas</button>
+                <button class="cat-tab" onclick="filterLessons('daily', this)">Vida Diaria</button>
+                <button class="cat-tab" onclick="filterLessons('social', this)">Social</button>
+                <button class="cat-tab" onclick="filterLessons('travel', this)">Viajes</button>
+                <button class="cat-tab" onclick="filterLessons('activities', this)">Actividades</button>
+                <button class="cat-tab" onclick="filterLessons('emergency', this)">Emergencias</button>
+            </div>
+            <div class="lessons-grid" id="lessonsGrid"></div>
+        </div>
+
+        <!-- Vocabulary View -->
+        <div class="view" id="vocabView">
+            <div class="lessons-header">
+                <h1>📝 Vocabulario • Vocabulary</h1>
+                <p>Todas las palabras que has aprendido</p>
+            </div>
+            <div class="vocab-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Buscar palabras... / Search words..." id="vocabSearch" oninput="filterVocab()">
+            </div>
+            <div class="vocab-grid" id="vocabGrid"></div>
+        </div>
+
+        <!-- Lesson Detail View -->
+        <div class="view" id="lessonDetailView">
+            <div class="lesson-detail-header">
+                <button class="back-btn" onclick="showView('lessons')">← Volver</button>
+                <div class="ld-info">
+                    <span class="ld-icon" id="ldIcon"></span>
+                    <div><h2 id="ldTitle"></h2><p id="ldSubtitle"></p></div>
+                </div>
+                <div class="score-badge" id="ldScore">0/0</div>
+            </div>
+            <div class="lesson-tabs">
+                <button class="lesson-tab active" onclick="showTab('conv')" id="tabConv">💬 Conversación</button>
+                <button class="lesson-tab" onclick="showTab('vocabTab')" id="tabVocab">📝 Vocabulario</button>
+                <button class="lesson-tab" onclick="showTab('exercises')" id="tabEx">✏️ Ejercicios</button>
+            </div>
+            <div class="lesson-content">
+                <!-- Conversation Tab -->
+                <div class="tab-content active" id="convTab">
+                    <div class="toggle-bar">
+                        <button class="toggle-btn" id="togTrans" onclick="toggleTrans()">🇪🇸 Traducción</button>
+                        <button class="toggle-btn" id="togPron" onclick="togglePron()">📝 Fonética</button>
+                        <button class="toggle-btn" id="togAuto" onclick="toggleAuto()">🔊 Auto-play</button>
+                        <div class="speed-ctrl">
+                            <label>Velocidad:</label>
+                            <select id="speedCtrl" onchange="changeSpeed()">
+                                <option value="0.6">Lento</option>
+                                <option value="0.8" selected>Normal</option>
+                                <option value="1">Rápido</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chat-area" id="chatArea"></div>
+                    <div class="response-area hidden" id="responseArea">
+                        <p class="prompt">Elige tu respuesta • Choose your response:</p>
+                        <div class="options" id="optionsBox"></div>
+                    </div>
+                    <div class="feedback-bar hidden" id="feedbackBar">
+                        <div class="fb-content"><span class="fb-icon" id="fbIcon"></span><span class="fb-text" id="fbText"></span></div>
+                        <button class="continue-btn" id="continueBtn" onclick="handleContinue()">Continuar →</button>
+                    </div>
+                </div>
+                <!-- Vocabulary Tab -->
+                <div class="tab-content" id="vocabTabContent">
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 18px;">Palabras clave de esta lección • Key words from this lesson</p>
+                    <div class="lesson-vocab-grid" id="lessonVocabGrid"></div>
+                </div>
+                <!-- Exercises Tab -->
+                <div class="tab-content" id="exercisesTab">
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 18px;">Practica lo que has aprendido • Practice what you've learned</p>
+                    <div class="exercise-box" id="exerciseBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ===================== LESSON DATA =====================
+    const lessons = [
+        { id:1, title:"Greetings & Introductions", titleEs:"Saludos y Presentaciones", icon:"👋", category:"social", difficulty:"beginner",
+          dialogues: [
+            { speaker:"Alex", english:"Good morning! How are you doing today?", spanish:"¡Buenos días! ¿Cómo estás hoy?", phonetic:"gud morning! hau ar yu duing tudei?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'm doing great, thank you! And you?", spanish:"¡Estoy muy bien, gracias! ¿Y tú?", correct:true },
+                { english:"Goodbye, see you later!", spanish:"¡Adiós, hasta luego!", correct:false },
+                { english:"I want coffee.", spanish:"Quiero café.", correct:false }
+            ]},
+            { speaker:"Alex", english:"I'm wonderful! My name is Alex. What's your name?", spanish:"¡Estoy de maravilla! Me llamo Alex. ¿Cómo te llamas?", phonetic:"aim wanderful! mai neim iz Alex. wats yor neim?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Nice to meet you, Alex! I'm Maria.", spanish:"¡Mucho gusto, Alex! Soy María.", correct:true },
+                { english:"I don't understand.", spanish:"No entiendo.", correct:false },
+                { english:"Where is the bathroom?", spanish:"¿Dónde está el baño?", correct:false }
+            ]},
+            { speaker:"Alex", english:"Nice to meet you too! Where are you from?", spanish:"¡Mucho gusto también! ¿De dónde eres?", phonetic:"nais tu mit yu tu! wer ar yu from?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'm from Mexico. I'm here to learn English.", spanish:"Soy de México. Estoy aquí para aprender inglés.", correct:true },
+                { english:"It's raining outside.", spanish:"Está lloviendo afuera.", correct:false },
+                { english:"The food is delicious.", spanish:"La comida está deliciosa.", correct:false }
+            ]},
+            { speaker:"Alex", english:"That's great! Welcome! I hope you enjoy learning.", spanish:"¡Qué bien! ¡Bienvenida! Espero que disfrutes aprender.", phonetic:"dats greit! welkam! ai joup yu enyoi lerning." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Thank you so much! You're very kind.", spanish:"¡Muchas gracias! Eres muy amable.", correct:true },
+                { english:"I need to go now.", spanish:"Necesito irme ahora.", correct:false },
+                { english:"How much does it cost?", spanish:"¿Cuánto cuesta?", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Good morning", spanish:"Buenos días", phonetic:"gud morning" },
+            { english:"Good afternoon", spanish:"Buenas tardes", phonetic:"gud afternun" },
+            { english:"Good evening", spanish:"Buenas noches", phonetic:"gud ivning" },
+            { english:"Good night", spanish:"Buenas noches (despedida)", phonetic:"gud nait" },
+            { english:"Nice to meet you", spanish:"Mucho gusto", phonetic:"nais tu mit yu" },
+            { english:"How are you?", spanish:"¿Cómo estás?", phonetic:"hau ar yu?" },
+            { english:"I'm fine", spanish:"Estoy bien", phonetic:"aim fain" },
+            { english:"I'm great", spanish:"Estoy muy bien", phonetic:"aim greit" },
+            { english:"I'm okay", spanish:"Estoy bien", phonetic:"aim okei" },
+            { english:"Not bad", spanish:"No está mal", phonetic:"not bad" },
+            { english:"Thank you", spanish:"Gracias", phonetic:"zenk yu" },
+            { english:"Thanks a lot", spanish:"Muchas gracias", phonetic:"zenks a lot" },
+            { english:"You're welcome", spanish:"De nada", phonetic:"yor welkam" },
+            { english:"No problem", spanish:"No hay problema", phonetic:"nou problem" },
+            { english:"Where are you from?", spanish:"¿De dónde eres?", phonetic:"wer ar yu from?" },
+            { english:"Welcome", spanish:"Bienvenido/a", phonetic:"welkam" },
+            { english:"Hello", spanish:"Hola", phonetic:"helou" },
+            { english:"Hi", spanish:"Hola (informal)", phonetic:"hai" },
+            { english:"Hey", spanish:"Oye/Hola", phonetic:"hei" },
+            { english:"Goodbye", spanish:"Adiós", phonetic:"gudbai" },
+            { english:"Bye", spanish:"Chao", phonetic:"bai" },
+            { english:"See you later", spanish:"Hasta luego", phonetic:"si yu leiter" },
+            { english:"See you soon", spanish:"Hasta pronto", phonetic:"si yu sun" },
+            { english:"See you tomorrow", spanish:"Hasta mañana", phonetic:"si yu tumorou" },
+            { english:"Take care", spanish:"Cuídate", phonetic:"teik ker" },
+            { english:"Have a nice day", spanish:"Que tengas un buen día", phonetic:"hav a nais dei" },
+            { english:"My name is", spanish:"Me llamo / Mi nombre es", phonetic:"mai neim iz" },
+            { english:"What's your name?", spanish:"¿Cómo te llamas?", phonetic:"wats yor neim?" },
+            { english:"Pleased to meet you", spanish:"Encantado/a de conocerte", phonetic:"plisd tu mit yu" },
+            { english:"Likewise", spanish:"Igualmente", phonetic:"laikwais" },
+            { english:"How's it going?", spanish:"¿Qué tal?", phonetic:"haus it going?" },
+            { english:"What's up?", spanish:"¿Qué onda?", phonetic:"wats ap?" },
+            { english:"Long time no see", spanish:"Cuánto tiempo sin verte", phonetic:"long taim nou si" },
+            { english:"How have you been?", spanish:"¿Cómo has estado?", phonetic:"hau hav yu bin?" },
+            { english:"I'm from", spanish:"Soy de", phonetic:"aim from" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"Good _____, how are you?", options:["morning","food","table","car"], answer:"morning", hint:"Buenos días" },
+            { type:"fillBlank", question:"Nice to _____ you!", options:["eat","meet","sleep","run"], answer:"meet", hint:"Mucho gusto" },
+            { type:"fillBlank", question:"Where are you _____?", options:["going","from","eating","sleeping"], answer:"from", hint:"¿De dónde eres?" },
+            { type:"matching", pairs:[{english:"Hello",spanish:"Hola"},{english:"Goodbye",spanish:"Adiós"},{english:"Thank you",spanish:"Gracias"},{english:"Please",spanish:"Por favor"}] },
+            { type:"fillBlank", question:"I'm _____ great today!", options:["doing","eating","running","sleeping"], answer:"doing", hint:"Estoy muy bien" },
+            { type:"fillBlank", question:"You're very _____.", options:["hungry","kind","tired","cold"], answer:"kind", hint:"Eres muy amable" }
+          ]
+        },
+        { id:2, title:"At a Restaurant", titleEs:"En un Restaurante", icon:"🍽️", category:"daily", difficulty:"beginner",
+          dialogues: [
+            { speaker:"Waiter", english:"Good evening! Welcome to our restaurant. Table for how many?", spanish:"¡Buenas noches! Bienvenido a nuestro restaurante. ¿Mesa para cuántos?", phonetic:"gud ivning! welkam tu aur restorant. teibol for hau meni?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Table for two, please. Do you have a table by the window?", spanish:"Mesa para dos, por favor. ¿Tienen una mesa junto a la ventana?", correct:true },
+                { english:"I want to pay the bill.", spanish:"Quiero pagar la cuenta.", correct:false },
+                { english:"Where is the train station?", spanish:"¿Dónde está la estación de tren?", correct:false }
+            ]},
+            { speaker:"Waiter", english:"Of course! Here are your menus. Can I get you something to drink?", spanish:"¡Por supuesto! Aquí están sus menús. ¿Les traigo algo de beber?", phonetic:"of kors! hir ar yor menyus. kan ai get yu samthing tu drink?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, I'd like water and my friend would like orange juice.", spanish:"Sí, me gustaría agua y mi amigo quiere jugo de naranja.", correct:true },
+                { english:"No, I don't like restaurants.", spanish:"No, no me gustan los restaurantes.", correct:false },
+                { english:"What time is it?", spanish:"¿Qué hora es?", correct:false }
+            ]},
+            { speaker:"Waiter", english:"Here are your drinks. Are you ready to order?", spanish:"Aquí están sus bebidas. ¿Están listos para ordenar?", phonetic:"hir ar yor drinks. ar yu redi tu order?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes! I'd like the grilled chicken with vegetables, please.", spanish:"¡Sí! Me gustaría el pollo a la parrilla con verduras, por favor.", correct:true },
+                { english:"Good morning! How are you?", spanish:"¡Buenos días! ¿Cómo estás?", correct:false },
+                { english:"I need a taxi.", spanish:"Necesito un taxi.", correct:false }
+            ]},
+            { speaker:"Waiter", english:"Excellent choice! Here's your food. Enjoy your meal!", spanish:"¡Excelente elección! Aquí está su comida. ¡Buen provecho!", phonetic:"ekselent chois! hirs yor fud. enyoi yor mil!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"This looks delicious! Could we have the check when you get a chance?", spanish:"¡Esto se ve delicioso! ¿Podríamos tener la cuenta cuando pueda?", correct:true },
+                { english:"I want to sleep.", spanish:"Quiero dormir.", correct:false },
+                { english:"It's very cold today.", spanish:"Hace mucho frío hoy.", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Menu", spanish:"Menú", phonetic:"menyu" },
+            { english:"Table", spanish:"Mesa", phonetic:"teibol" },
+            { english:"Chair", spanish:"Silla", phonetic:"cher" },
+            { english:"Waiter", spanish:"Mesero", phonetic:"weiter" },
+            { english:"Waitress", spanish:"Mesera", phonetic:"weitres" },
+            { english:"Bill/Check", spanish:"Cuenta", phonetic:"bil/chek" },
+            { english:"Tip", spanish:"Propina", phonetic:"tip" },
+            { english:"Appetizer", spanish:"Entrada", phonetic:"apitaizer" },
+            { english:"Main course", spanish:"Plato principal", phonetic:"mein kors" },
+            { english:"Side dish", spanish:"Acompañamiento", phonetic:"said dish" },
+            { english:"Dessert", spanish:"Postre", phonetic:"dizert" },
+            { english:"Beverage", spanish:"Bebida", phonetic:"beverich" },
+            { english:"Water", spanish:"Agua", phonetic:"woter" },
+            { english:"Juice", spanish:"Jugo", phonetic:"yus" },
+            { english:"Coffee", spanish:"Café", phonetic:"kofi" },
+            { english:"Tea", spanish:"Té", phonetic:"ti" },
+            { english:"Soda", spanish:"Refresco", phonetic:"souda" },
+            { english:"Wine", spanish:"Vino", phonetic:"wain" },
+            { english:"Beer", spanish:"Cerveza", phonetic:"bir" },
+            { english:"Delicious", spanish:"Delicioso", phonetic:"delishos" },
+            { english:"Tasty", spanish:"Sabroso", phonetic:"teisti" },
+            { english:"Spicy", spanish:"Picante", phonetic:"spaisi" },
+            { english:"Sweet", spanish:"Dulce", phonetic:"swit" },
+            { english:"Sour", spanish:"Agrio", phonetic:"sauer" },
+            { english:"Salty", spanish:"Salado", phonetic:"solti" },
+            { english:"Bitter", spanish:"Amargo", phonetic:"biter" },
+            { english:"Hot", spanish:"Caliente", phonetic:"jot" },
+            { english:"Cold", spanish:"Frío", phonetic:"kould" },
+            { english:"Reservation", spanish:"Reservación", phonetic:"rezerveishon" },
+            { english:"To order", spanish:"Ordenar", phonetic:"tu order" },
+            { english:"Knife", spanish:"Cuchillo", phonetic:"naif" },
+            { english:"Fork", spanish:"Tenedor", phonetic:"fork" },
+            { english:"Spoon", spanish:"Cuchara", phonetic:"spun" },
+            { english:"Napkin", spanish:"Servilleta", phonetic:"napkin" },
+            { english:"Plate", spanish:"Plato", phonetic:"pleit" },
+            { english:"Glass", spanish:"Vaso", phonetic:"glas" },
+            { english:"Cup", spanish:"Taza", phonetic:"kap" },
+            { english:"Bowl", spanish:"Tazón", phonetic:"boul" },
+            { english:"Chicken", spanish:"Pollo", phonetic:"chiken" },
+            { english:"Beef", spanish:"Carne de res", phonetic:"bif" },
+            { english:"Pork", spanish:"Cerdo", phonetic:"pork" },
+            { english:"Fish", spanish:"Pescado", phonetic:"fish" },
+            { english:"Shrimp", spanish:"Camarones", phonetic:"shrimp" },
+            { english:"Salad", spanish:"Ensalada", phonetic:"salad" },
+            { english:"Soup", spanish:"Sopa", phonetic:"sup" },
+            { english:"Rice", spanish:"Arroz", phonetic:"rais" },
+            { english:"Bread", spanish:"Pan", phonetic:"bred" },
+            { english:"Vegetables", spanish:"Verduras", phonetic:"veyetabols" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"Table for _____, please.", options:["two","eat","menu","water"], answer:"two", hint:"Mesa para dos" },
+            { type:"fillBlank", question:"Can I see the _____, please?", options:["car","menu","bed","phone"], answer:"menu", hint:"¿Puedo ver el menú?" },
+            { type:"fillBlank", question:"I'd like a glass of _____.", options:["table","chair","water","menu"], answer:"water", hint:"Quisiera un vaso de agua" },
+            { type:"matching", pairs:[{english:"Chicken",spanish:"Pollo"},{english:"Water",spanish:"Agua"},{english:"Salad",spanish:"Ensalada"},{english:"Dessert",spanish:"Postre"}] },
+            { type:"fillBlank", question:"Could we have the _____, please?", options:["menu","check","table","food"], answer:"check", hint:"La cuenta, por favor" },
+            { type:"fillBlank", question:"This food is _____!", options:["delicious","terrible","cold","old"], answer:"delicious", hint:"¡Delicioso!" }
+          ]
+        },
+        { id:3, title:"Asking for Directions", titleEs:"Pidiendo Direcciones", icon:"🗺️", category:"travel", difficulty:"beginner",
+          dialogues: [
+            { speaker:"You", english:"Excuse me, I'm a bit lost. Can you help me?", spanish:"Disculpe, estoy un poco perdido. ¿Puede ayudarme?", phonetic:"ekskius mi, aim a bit lost. kan yu help mi?" },
+            { speaker:"Stranger", english:"Of course! Where are you trying to go?", spanish:"¡Claro! ¿A dónde intenta ir?", phonetic:"of kors! wer ar yu traiing tu gou?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'm looking for the train station. Is it far from here?", spanish:"Estoy buscando la estación de tren. ¿Está lejos de aquí?", correct:true },
+                { english:"I like pizza.", spanish:"Me gusta la pizza.", correct:false },
+                { english:"What's your name?", spanish:"¿Cómo te llamas?", correct:false }
+            ]},
+            { speaker:"Stranger", english:"Go straight for two blocks, then turn left at the traffic light.", spanish:"Vaya recto dos cuadras, luego gire a la izquierda en el semáforo.", phonetic:"gou streit for tu bloks, den tern left at de trafik lait." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Okay, straight for two blocks, then turn left. Got it!", spanish:"Bien, recto dos cuadras, luego a la izquierda. ¡Entendido!", correct:true },
+                { english:"I'm hungry.", spanish:"Tengo hambre.", correct:false },
+                { english:"How old are you?", spanish:"¿Cuántos años tienes?", correct:false }
+            ]},
+            { speaker:"Stranger", english:"The station is right after the park. You can't miss it!", spanish:"La estación está justo después del parque. ¡No tiene pierde!", phonetic:"de steishon iz rait after de park. yu kant mis it!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Thank you so much for your help! Have a great day!", spanish:"¡Muchas gracias por su ayuda! ¡Que tenga un excelente día!", correct:true },
+                { english:"I need to buy groceries.", spanish:"Necesito comprar comestibles.", correct:false },
+                { english:"My phone is broken.", spanish:"Mi teléfono está roto.", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Straight", spanish:"Recto/Derecho", phonetic:"streit" },
+            { english:"Turn left", spanish:"Gire a la izquierda", phonetic:"tern left" },
+            { english:"Turn right", spanish:"Gire a la derecha", phonetic:"tern rait" },
+            { english:"Left", spanish:"Izquierda", phonetic:"left" },
+            { english:"Right", spanish:"Derecha", phonetic:"rait" },
+            { english:"Block", spanish:"Cuadra", phonetic:"blok" },
+            { english:"Traffic light", spanish:"Semáforo", phonetic:"trafik lait" },
+            { english:"Stop sign", spanish:"Señal de alto", phonetic:"stop sain" },
+            { english:"Corner", spanish:"Esquina", phonetic:"korner" },
+            { english:"Intersection", spanish:"Intersección", phonetic:"intersekshon" },
+            { english:"Crosswalk", spanish:"Paso peatonal", phonetic:"kroswok" },
+            { english:"Sidewalk", spanish:"Acera/Banqueta", phonetic:"saidwok" },
+            { english:"Street", spanish:"Calle", phonetic:"strit" },
+            { english:"Avenue", spanish:"Avenida", phonetic:"avenyu" },
+            { english:"Highway", spanish:"Carretera", phonetic:"jaiwei" },
+            { english:"Bridge", spanish:"Puente", phonetic:"bridy" },
+            { english:"Next to", spanish:"Junto a", phonetic:"nekst tu" },
+            { english:"Across from", spanish:"Enfrente de", phonetic:"akros from" },
+            { english:"Between", spanish:"Entre", phonetic:"bitwin" },
+            { english:"Behind", spanish:"Detrás de", phonetic:"bijaind" },
+            { english:"In front of", spanish:"Enfrente de", phonetic:"in front of" },
+            { english:"Near", spanish:"Cerca", phonetic:"nir" },
+            { english:"Far", spanish:"Lejos", phonetic:"far" },
+            { english:"Close", spanish:"Cerca", phonetic:"klous" },
+            { english:"Map", spanish:"Mapa", phonetic:"map" },
+            { english:"Address", spanish:"Dirección", phonetic:"adres" },
+            { english:"North", spanish:"Norte", phonetic:"norz" },
+            { english:"South", spanish:"Sur", phonetic:"sauz" },
+            { english:"East", spanish:"Este", phonetic:"ist" },
+            { english:"West", spanish:"Oeste", phonetic:"west" },
+            { english:"Landmark", spanish:"Punto de referencia", phonetic:"landmark" },
+            { english:"Building", spanish:"Edificio", phonetic:"bilding" },
+            { english:"Park", spanish:"Parque", phonetic:"park" },
+            { english:"Train station", spanish:"Estación de tren", phonetic:"trein steishon" },
+            { english:"Bus stop", spanish:"Parada de autobús", phonetic:"bas stop" },
+            { english:"Subway", spanish:"Metro", phonetic:"sabwei" },
+            { english:"Parking lot", spanish:"Estacionamiento", phonetic:"parking lot" },
+            { english:"Gas station", spanish:"Gasolinera", phonetic:"gas steishon" },
+            { english:"Hospital", spanish:"Hospital", phonetic:"jospital" },
+            { english:"Pharmacy", spanish:"Farmacia", phonetic:"farmasi" },
+            { english:"Bank", spanish:"Banco", phonetic:"bank" },
+            { english:"Supermarket", spanish:"Supermercado", phonetic:"supermarket" },
+            { english:"Church", spanish:"Iglesia", phonetic:"cherch" },
+            { english:"School", spanish:"Escuela", phonetic:"skul" },
+            { english:"Library", spanish:"Biblioteca", phonetic:"laibreri" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"Go _____ for two blocks.", options:["straight","left","up","down"], answer:"straight", hint:"Vaya recto" },
+            { type:"fillBlank", question:"Turn _____ at the traffic light.", options:["straight","left","far","near"], answer:"left", hint:"Gire a la izquierda" },
+            { type:"matching", pairs:[{english:"Left",spanish:"Izquierda"},{english:"Right",spanish:"Derecha"},{english:"Straight",spanish:"Recto"},{english:"Corner",spanish:"Esquina"}] },
+            { type:"fillBlank", question:"Is it _____ from here?", options:["far","eating","sleeping","running"], answer:"far", hint:"¿Está lejos?" },
+            { type:"fillBlank", question:"The bank is _____ the supermarket.", options:["eating","sleeping","next to","running"], answer:"next to", hint:"Junto a" }
+          ]
+        },
+        { id:4, title:"Shopping for Clothes", titleEs:"Comprando Ropa", icon:"🛍️", category:"daily", difficulty:"beginner",
+          dialogues: [
+            { speaker:"Clerk", english:"Hello! Welcome to our store. Is there anything specific you're looking for?", spanish:"¡Hola! Bienvenido a nuestra tienda. ¿Busca algo específico?", phonetic:"helou! welkam tu aur stor. iz der enithing spesifik yor luking for?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, I'm looking for a jacket for the winter.", spanish:"Sí, busco una chaqueta para el invierno.", correct:true },
+                { english:"I want to eat pizza.", spanish:"Quiero comer pizza.", correct:false },
+                { english:"Where is the train?", spanish:"¿Dónde está el tren?", correct:false }
+            ]},
+            { speaker:"Clerk", english:"Great! We have beautiful jackets. What size do you wear?", spanish:"¡Genial! Tenemos chaquetas hermosas. ¿Qué talla usa?", phonetic:"greit! wi hav biutiful yakets. wat saiz du yu wer?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I usually wear a medium. Do you have this one in blue?", spanish:"Normalmente uso mediana. ¿Tienen esta en azul?", correct:true },
+                { english:"I don't like shopping.", spanish:"No me gusta comprar.", correct:false },
+                { english:"What time do you close?", spanish:"¿A qué hora cierran?", correct:false }
+            ]},
+            { speaker:"Clerk", english:"Yes! Here's the blue one. Would you like to try it on?", spanish:"¡Sí! Aquí está la azul. ¿Le gustaría probársela?", phonetic:"yes! hirs de blu wan. wud yu laik tu trai it on?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, please. Where are the fitting rooms?", spanish:"Sí, por favor. ¿Dónde están los probadores?", correct:true },
+                { english:"I'm very tired today.", spanish:"Estoy muy cansado hoy.", correct:false },
+                { english:"The food is cold.", spanish:"La comida está fría.", correct:false }
+            ]},
+            { speaker:"Clerk", english:"Right over there. It's $89.99 with a 20% discount today!", spanish:"Justo ahí. ¡Son $89.99 con 20% de descuento hoy!", phonetic:"rait ouver der. its eiti-nain nainty-nain wiz a twenti persent diskount tudei!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"That's a great deal! I'll take it. Can I pay with card?", spanish:"¡Qué buena oferta! Me la llevo. ¿Puedo pagar con tarjeta?", correct:true },
+                { english:"I don't have money.", spanish:"No tengo dinero.", correct:false },
+                { english:"Where is the restaurant?", spanish:"¿Dónde está el restaurante?", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Size", spanish:"Talla", phonetic:"saiz" },
+            { english:"Small", spanish:"Pequeño/Chico", phonetic:"smol" },
+            { english:"Medium", spanish:"Mediano", phonetic:"midium" },
+            { english:"Large", spanish:"Grande", phonetic:"larch" },
+            { english:"Extra large", spanish:"Extra grande", phonetic:"ekstra larch" },
+            { english:"Fitting room", spanish:"Probador", phonetic:"fiting rum" },
+            { english:"Discount", spanish:"Descuento", phonetic:"diskount" },
+            { english:"Sale", spanish:"Oferta/Rebaja", phonetic:"seil" },
+            { english:"Price", spanish:"Precio", phonetic:"prais" },
+            { english:"Expensive", spanish:"Caro", phonetic:"ekspensiv" },
+            { english:"Cheap", spanish:"Barato", phonetic:"chip" },
+            { english:"Affordable", spanish:"Accesible", phonetic:"afordabol" },
+            { english:"Cash", spanish:"Efectivo", phonetic:"kash" },
+            { english:"Credit card", spanish:"Tarjeta de crédito", phonetic:"kredit kard" },
+            { english:"Debit card", spanish:"Tarjeta de débito", phonetic:"debit kard" },
+            { english:"Receipt", spanish:"Recibo", phonetic:"risit" },
+            { english:"Try on", spanish:"Probarse", phonetic:"trai on" },
+            { english:"Shirt", spanish:"Camisa", phonetic:"shert" },
+            { english:"T-shirt", spanish:"Camiseta", phonetic:"ti-shert" },
+            { english:"Blouse", spanish:"Blusa", phonetic:"blaus" },
+            { english:"Pants", spanish:"Pantalones", phonetic:"pants" },
+            { english:"Jeans", spanish:"Jeans/Mezclilla", phonetic:"yins" },
+            { english:"Shorts", spanish:"Shorts/Pantalones cortos", phonetic:"shorts" },
+            { english:"Skirt", spanish:"Falda", phonetic:"skert" },
+            { english:"Dress", spanish:"Vestido", phonetic:"dres" },
+            { english:"Jacket", spanish:"Chaqueta", phonetic:"yaket" },
+            { english:"Coat", spanish:"Abrigo", phonetic:"kout" },
+            { english:"Sweater", spanish:"Suéter", phonetic:"sweter" },
+            { english:"Hoodie", spanish:"Sudadera con capucha", phonetic:"judi" },
+            { english:"Suit", spanish:"Traje", phonetic:"sut" },
+            { english:"Tie", spanish:"Corbata", phonetic:"tai" },
+            { english:"Shoes", spanish:"Zapatos", phonetic:"shus" },
+            { english:"Sneakers", spanish:"Tenis", phonetic:"snikers" },
+            { english:"Boots", spanish:"Botas", phonetic:"buts" },
+            { english:"Sandals", spanish:"Sandalias", phonetic:"sandals" },
+            { english:"Heels", spanish:"Tacones", phonetic:"jils" },
+            { english:"Socks", spanish:"Calcetines", phonetic:"soks" },
+            { english:"Hat", spanish:"Sombrero", phonetic:"jat" },
+            { english:"Cap", spanish:"Gorra", phonetic:"kap" },
+            { english:"Belt", spanish:"Cinturón", phonetic:"belt" },
+            { english:"Scarf", spanish:"Bufanda", phonetic:"skarf" },
+            { english:"Gloves", spanish:"Guantes", phonetic:"glavs" },
+            { english:"Underwear", spanish:"Ropa interior", phonetic:"anderwer" },
+            { english:"Pajamas", spanish:"Pijama", phonetic:"payamas" },
+            { english:"Cotton", spanish:"Algodón", phonetic:"koton" },
+            { english:"Leather", spanish:"Cuero", phonetic:"leder" },
+            { english:"Wool", spanish:"Lana", phonetic:"wul" },
+            { english:"Color", spanish:"Color", phonetic:"kolor" },
+            { english:"Pattern", spanish:"Patrón/Diseño", phonetic:"patern" },
+            { english:"Striped", spanish:"Rayado", phonetic:"straipt" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"What _____ do you wear?", options:["size","color","food","time"], answer:"size", hint:"¿Qué talla usas?" },
+            { type:"fillBlank", question:"Can I _____ it on?", options:["eat","try","sleep","run"], answer:"try", hint:"¿Puedo probármelo?" },
+            { type:"fillBlank", question:"How much does it _____?", options:["cost","eat","sleep","walk"], answer:"cost", hint:"¿Cuánto cuesta?" },
+            { type:"matching", pairs:[{english:"Shirt",spanish:"Camisa"},{english:"Pants",spanish:"Pantalones"},{english:"Shoes",spanish:"Zapatos"},{english:"Jacket",spanish:"Chaqueta"}] },
+            { type:"fillBlank", question:"We have a 20% _____ today!", options:["discount","food","table","water"], answer:"discount", hint:"Descuento" }
+          ]
+        },
+        { id:5, title:"Cooking Together", titleEs:"Cocinando Juntos", icon:"👨‍🍳", category:"activities", difficulty:"intermediate",
+          dialogues: [
+            { speaker:"Chef", english:"Welcome to our cooking class! Today we're making pasta from scratch.", spanish:"¡Bienvenidos a nuestra clase de cocina! Hoy haremos pasta desde cero.", phonetic:"welkam tu aur kuking klas! tudei wir meiking pasta from skrach." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"That sounds exciting! What ingredients do we need?", spanish:"¡Eso suena emocionante! ¿Qué ingredientes necesitamos?", correct:true },
+                { english:"I don't like pasta.", spanish:"No me gusta la pasta.", correct:false },
+                { english:"Where is the bathroom?", spanish:"¿Dónde está el baño?", correct:false }
+            ]},
+            { speaker:"Chef", english:"We need flour, eggs, olive oil, and salt. First, let's measure the flour.", spanish:"Necesitamos harina, huevos, aceite de oliva y sal. Primero, midamos la harina.", phonetic:"wi nid flaur, egs, oliv oil, and solt. ferst, lets mezhur de flaur." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"How much flour do we need? Should I use this measuring cup?", spanish:"¿Cuánta harina necesitamos? ¿Debo usar esta taza medidora?", correct:true },
+                { english:"I'm tired.", spanish:"Estoy cansado.", correct:false },
+                { english:"What time is it?", spanish:"¿Qué hora es?", correct:false }
+            ]},
+            { speaker:"Chef", english:"Two cups of flour. Now make a well in the center and crack the eggs.", spanish:"Dos tazas de harina. Ahora haz un pozo en el centro y rompe los huevos.", phonetic:"tu kaps of flaur. nau meik a wel in de senter and krak de egs." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Like this? Should I mix the eggs with a fork first?", spanish:"¿Así? ¿Debo mezclar los huevos con un tenedor primero?", correct:true },
+                { english:"I don't have eggs.", spanish:"No tengo huevos.", correct:false },
+                { english:"The kitchen is dirty.", spanish:"La cocina está sucia.", correct:false }
+            ]},
+            { speaker:"Chef", english:"Perfect! Knead the dough until smooth. Great job!", spanish:"¡Perfecto! Amasa la masa hasta que quede suave. ¡Buen trabajo!", phonetic:"perfekt! nid de dou antil smuz. greit yob!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"This is so much fun! How long do we let it rest?", spanish:"¡Esto es muy divertido! ¿Cuánto tiempo la dejamos reposar?", correct:true },
+                { english:"I don't like cooking.", spanish:"No me gusta cocinar.", correct:false },
+                { english:"The stove is broken.", spanish:"La estufa está rota.", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Flour", spanish:"Harina", phonetic:"flaur" },
+            { english:"Eggs", spanish:"Huevos", phonetic:"egs" },
+            { english:"Olive oil", spanish:"Aceite de oliva", phonetic:"oliv oil" },
+            { english:"Vegetable oil", spanish:"Aceite vegetal", phonetic:"veyetabol oil" },
+            { english:"Butter", spanish:"Mantequilla", phonetic:"bater" },
+            { english:"Salt", spanish:"Sal", phonetic:"solt" },
+            { english:"Pepper", spanish:"Pimienta", phonetic:"peper" },
+            { english:"Sugar", spanish:"Azúcar", phonetic:"shugar" },
+            { english:"Garlic", spanish:"Ajo", phonetic:"garlik" },
+            { english:"Onion", spanish:"Cebolla", phonetic:"anion" },
+            { english:"Tomato", spanish:"Tomate", phonetic:"tomeitou" },
+            { english:"Dough", spanish:"Masa", phonetic:"dou" },
+            { english:"Batter", spanish:"Mezcla/Masa líquida", phonetic:"bater" },
+            { english:"Ingredient", spanish:"Ingrediente", phonetic:"ingredient" },
+            { english:"Recipe", spanish:"Receta", phonetic:"resipi" },
+            { english:"Knead", spanish:"Amasar", phonetic:"nid" },
+            { english:"Mix", spanish:"Mezclar", phonetic:"miks" },
+            { english:"Stir", spanish:"Revolver", phonetic:"ster" },
+            { english:"Whisk", spanish:"Batir", phonetic:"wisk" },
+            { english:"Beat", spanish:"Batir", phonetic:"bit" },
+            { english:"Pour", spanish:"Verter", phonetic:"por" },
+            { english:"Boil", spanish:"Hervir", phonetic:"boil" },
+            { english:"Simmer", spanish:"Cocinar a fuego lento", phonetic:"simer" },
+            { english:"Fry", spanish:"Freír", phonetic:"frai" },
+            { english:"Sauté", spanish:"Saltear", phonetic:"sotei" },
+            { english:"Bake", spanish:"Hornear", phonetic:"beik" },
+            { english:"Roast", spanish:"Asar", phonetic:"roust" },
+            { english:"Grill", spanish:"Asar a la parrilla", phonetic:"gril" },
+            { english:"Steam", spanish:"Cocinar al vapor", phonetic:"stim" },
+            { english:"Chop", spanish:"Picar", phonetic:"chop" },
+            { english:"Slice", spanish:"Rebanar", phonetic:"slais" },
+            { english:"Dice", spanish:"Cortar en cubos", phonetic:"dais" },
+            { english:"Mince", spanish:"Picar finamente", phonetic:"mins" },
+            { english:"Peel", spanish:"Pelar", phonetic:"pil" },
+            { english:"Grate", spanish:"Rallar", phonetic:"greit" },
+            { english:"Measure", spanish:"Medir", phonetic:"mezhur" },
+            { english:"Preheat", spanish:"Precalentar", phonetic:"prijit" },
+            { english:"Stove", spanish:"Estufa", phonetic:"stouv" },
+            { english:"Oven", spanish:"Horno", phonetic:"oven" },
+            { english:"Microwave", spanish:"Microondas", phonetic:"maikroweiv" },
+            { english:"Pot", spanish:"Olla", phonetic:"pot" },
+            { english:"Pan", spanish:"Sartén", phonetic:"pan" },
+            { english:"Skillet", spanish:"Sartén", phonetic:"skilet" },
+            { english:"Lid", spanish:"Tapa", phonetic:"lid" },
+            { english:"Cutting board", spanish:"Tabla de cortar", phonetic:"kating bord" },
+            { english:"Spatula", spanish:"Espátula", phonetic:"spatula" },
+            { english:"Ladle", spanish:"Cucharón", phonetic:"leidol" },
+            { english:"Colander", spanish:"Colador", phonetic:"kolander" },
+            { english:"Measuring cup", spanish:"Taza medidora", phonetic:"mezhuring kap" },
+            { english:"Rolling pin", spanish:"Rodillo", phonetic:"rolling pin" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"We need two cups of _____.", options:["flour","water","table","chair"], answer:"flour", hint:"Harina" },
+            { type:"fillBlank", question:"_____ the eggs into the bowl.", options:["Eat","Crack","Sleep","Run"], answer:"Crack", hint:"Rompe los huevos" },
+            { type:"fillBlank", question:"_____ the dough until smooth.", options:["Eat","Knead","Sleep","Walk"], answer:"Knead", hint:"Amasa" },
+            { type:"matching", pairs:[{english:"Flour",spanish:"Harina"},{english:"Salt",spanish:"Sal"},{english:"Sugar",spanish:"Azúcar"},{english:"Butter",spanish:"Mantequilla"}] },
+            { type:"fillBlank", question:"_____ the water until it bubbles.", options:["Boil","Freeze","Eat","Sleep"], answer:"Boil", hint:"Hervir" }
+          ]
+        },
+        { id:6, title:"At the Dance Class", titleEs:"En la Clase de Baile", icon:"💃", category:"activities", difficulty:"intermediate",
+          dialogues: [
+            { speaker:"Instructor", english:"Welcome everyone! Today we're learning salsa basics. Has anyone danced before?", spanish:"¡Bienvenidos todos! Hoy aprenderemos lo básico de la salsa. ¿Alguien ha bailado antes?", phonetic:"welkam evriwan! tudei wir lerning salsa beisiks. has eniwan danst bifor?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I've never danced salsa, but I'm excited to learn!", spanish:"Nunca he bailado salsa, ¡pero estoy emocionado por aprender!", correct:true },
+                { english:"I don't like music.", spanish:"No me gusta la música.", correct:false },
+                { english:"Where can I buy food?", spanish:"¿Dónde puedo comprar comida?", correct:false }
+            ]},
+            { speaker:"Instructor", english:"Great! First, step forward with your left foot.", spanish:"¡Bien! Primero, da un paso adelante con el pie izquierdo.", phonetic:"greit! ferst, step forward wiz yor left fut." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Like this? Should I keep my weight on the ball of my foot?", spanish:"¿Así? ¿Debo mantener mi peso en la punta del pie?", correct:true },
+                { english:"My feet hurt.", spanish:"Me duelen los pies.", correct:false },
+                { english:"I need water.", spanish:"Necesito agua.", correct:false }
+            ]},
+            { speaker:"Instructor", english:"Exactly! Now feel the rhythm and move your hips!", spanish:"¡Exacto! ¡Ahora siente el ritmo y mueve las caderas!", phonetic:"egzaktli! nau fil de rizm and muv yor hips!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"This is so much fun! I love how the music makes me want to move.", spanish:"¡Esto es muy divertido! Me encanta cómo la música me hace querer moverme.", correct:true },
+                { english:"The music is too loud.", spanish:"La música está muy fuerte.", correct:false },
+                { english:"I'm hungry.", spanish:"Tengo hambre.", correct:false }
+            ]},
+            { speaker:"Instructor", english:"You're doing amazing! Now let's try a turn. Spin to your right.", spanish:"¡Lo estás haciendo increíble! Ahora intentemos un giro. Gira a la derecha.", phonetic:"yor duing ameizing! nau lets trai a tern. spin tu yor rait." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Wow, that was fun! Can we practice that a few more times?", spanish:"¡Wow, eso fue divertido! ¿Podemos practicar eso unas veces más?", correct:true },
+                { english:"I'm dizzy.", spanish:"Estoy mareado.", correct:false },
+                { english:"When does class end?", spanish:"¿Cuándo termina la clase?", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Dance", spanish:"Bailar", phonetic:"dans" },
+            { english:"Dancer", spanish:"Bailarín/a", phonetic:"danser" },
+            { english:"Step", spanish:"Paso", phonetic:"step" },
+            { english:"Basic step", spanish:"Paso básico", phonetic:"beisik step" },
+            { english:"Rhythm", spanish:"Ritmo", phonetic:"rizm" },
+            { english:"Beat", spanish:"Compás", phonetic:"bit" },
+            { english:"Tempo", spanish:"Tempo", phonetic:"tempou" },
+            { english:"Turn/Spin", spanish:"Giro", phonetic:"tern/spin" },
+            { english:"Half turn", spanish:"Medio giro", phonetic:"jaf tern" },
+            { english:"Full turn", spanish:"Giro completo", phonetic:"ful tern" },
+            { english:"Partner", spanish:"Pareja", phonetic:"partner" },
+            { english:"Lead", spanish:"Guiar", phonetic:"lid" },
+            { english:"Follow", spanish:"Seguir", phonetic:"folou" },
+            { english:"Music", spanish:"Música", phonetic:"miuzik" },
+            { english:"Song", spanish:"Canción", phonetic:"song" },
+            { english:"Move", spanish:"Moverse", phonetic:"muv" },
+            { english:"Movement", spanish:"Movimiento", phonetic:"muvment" },
+            { english:"Hips", spanish:"Caderas", phonetic:"hips" },
+            { english:"Shoulders", spanish:"Hombros", phonetic:"shoulders" },
+            { english:"Arms", spanish:"Brazos", phonetic:"arms" },
+            { english:"Legs", spanish:"Piernas", phonetic:"legs" },
+            { english:"Feet", spanish:"Pies", phonetic:"fit" },
+            { english:"Balance", spanish:"Equilibrio", phonetic:"balans" },
+            { english:"Posture", spanish:"Postura", phonetic:"poschur" },
+            { english:"Practice", spanish:"Practicar", phonetic:"praktis" },
+            { english:"Rehearsal", spanish:"Ensayo", phonetic:"rijersol" },
+            { english:"Choreography", spanish:"Coreografía", phonetic:"koriografi" },
+            { english:"Forward", spanish:"Adelante", phonetic:"forward" },
+            { english:"Backward", spanish:"Atrás", phonetic:"bakward" },
+            { english:"Side step", spanish:"Paso lateral", phonetic:"said step" },
+            { english:"Cross step", spanish:"Paso cruzado", phonetic:"kros step" },
+            { english:"Salsa", spanish:"Salsa", phonetic:"salsa" },
+            { english:"Bachata", spanish:"Bachata", phonetic:"bachata" },
+            { english:"Merengue", spanish:"Merengue", phonetic:"merengue" },
+            { english:"Tango", spanish:"Tango", phonetic:"tangou" },
+            { english:"Waltz", spanish:"Vals", phonetic:"wolts" },
+            { english:"Hip hop", spanish:"Hip hop", phonetic:"jip jop" },
+            { english:"Ballet", spanish:"Ballet", phonetic:"balei" },
+            { english:"Dance floor", spanish:"Pista de baile", phonetic:"dans flor" },
+            { english:"Dance class", spanish:"Clase de baile", phonetic:"dans klas" },
+            { english:"Instructor", spanish:"Instructor/a", phonetic:"instraktour" },
+            { english:"Warm up", spanish:"Calentamiento", phonetic:"worm ap" },
+            { english:"Stretch", spanish:"Estirar", phonetic:"strech" },
+            { english:"Dip", spanish:"Inclinación", phonetic:"dip" },
+            { english:"Lift", spanish:"Levantamiento", phonetic:"lift" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"Step forward with your _____ foot.", options:["left","hand","head","eye"], answer:"left", hint:"Pie izquierdo" },
+            { type:"fillBlank", question:"Feel the _____ of the music.", options:["color","rhythm","taste","smell"], answer:"rhythm", hint:"Ritmo" },
+            { type:"fillBlank", question:"Let's try a _____ to the right.", options:["turn","eat","sleep","read"], answer:"turn", hint:"Giro" },
+            { type:"matching", pairs:[{english:"Dance",spanish:"Bailar"},{english:"Music",spanish:"Música"},{english:"Step",spanish:"Paso"},{english:"Turn",spanish:"Giro"}] },
+            { type:"fillBlank", question:"Move your _____ to the music!", options:["hips","ears","nose","eyes"], answer:"hips", hint:"Caderas" }
+          ]
+        },
+        { id:7, title:"At the Doctor's Office", titleEs:"En el Consultorio Médico", icon:"🏥", category:"emergency", difficulty:"intermediate",
+          dialogues: [
+            { speaker:"Receptionist", english:"Good morning! Do you have an appointment?", spanish:"¡Buenos días! ¿Tiene cita?", phonetic:"gud morning! du yu hav an apointment?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, I have an appointment at 10 AM. My name is Maria Garcia.", spanish:"Sí, tengo una cita a las 10 AM. Mi nombre es María García.", correct:true },
+                { english:"I want to buy medicine.", spanish:"Quiero comprar medicina.", correct:false },
+                { english:"Where is the restaurant?", spanish:"¿Dónde está el restaurante?", correct:false }
+            ]},
+            { speaker:"Doctor", english:"Hello Maria. What brings you in today?", spanish:"Hola María. ¿Qué te trae hoy?", phonetic:"helou Maria. wat brings yu in tudei?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I've had a headache and sore throat for three days.", spanish:"He tenido dolor de cabeza y de garganta por tres días.", correct:true },
+                { english:"I feel great!", spanish:"¡Me siento genial!", correct:false },
+                { english:"I like your office.", spanish:"Me gusta su consultorio.", correct:false }
+            ]},
+            { speaker:"Doctor", english:"I see. Do you have any fever? Have you taken any medication?", spanish:"Ya veo. ¿Tienes fiebre? ¿Has tomado algún medicamento?", phonetic:"ai si. du yu hav eni fiver? hav yu teiken eni medikeishan?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, I had a slight fever. I took ibuprofen but it didn't help.", spanish:"Sí, tuve un poco de fiebre. Tomé ibuprofeno pero no ayudó.", correct:true },
+                { english:"I don't know what medicine is.", spanish:"No sé qué es medicina.", correct:false },
+                { english:"I don't like taking pills.", spanish:"No me gusta tomar pastillas.", correct:false }
+            ]},
+            { speaker:"Doctor", english:"I'll prescribe antibiotics. Take them twice a day for a week.", spanish:"Te recetaré antibióticos. Tómalos dos veces al día por una semana.", phonetic:"ail priskraib antibayotiks. teik dem twais a dei for a wik." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Thank you, doctor. Should I come back if I don't feel better?", spanish:"Gracias, doctor. ¿Debo regresar si no me siento mejor?", correct:true },
+                { english:"I don't like antibiotics.", spanish:"No me gustan los antibióticos.", correct:false },
+                { english:"How much does it cost?", spanish:"¿Cuánto cuesta?", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Headache", spanish:"Dolor de cabeza", phonetic:"hedeik" },
+            { english:"Stomachache", spanish:"Dolor de estómago", phonetic:"stomakeik" },
+            { english:"Backache", spanish:"Dolor de espalda", phonetic:"bakeik" },
+            { english:"Toothache", spanish:"Dolor de muelas", phonetic:"tuzeik" },
+            { english:"Earache", spanish:"Dolor de oído", phonetic:"ireik" },
+            { english:"Sore throat", spanish:"Dolor de garganta", phonetic:"sor zrout" },
+            { english:"Fever", spanish:"Fiebre", phonetic:"fiver" },
+            { english:"Chills", spanish:"Escalofríos", phonetic:"chils" },
+            { english:"Cough", spanish:"Tos", phonetic:"kof" },
+            { english:"Cold", spanish:"Resfriado", phonetic:"kould" },
+            { english:"Flu", spanish:"Gripe", phonetic:"flu" },
+            { english:"Sneeze", spanish:"Estornudar", phonetic:"snis" },
+            { english:"Runny nose", spanish:"Nariz congestionada", phonetic:"rani nous" },
+            { english:"Nausea", spanish:"Náusea", phonetic:"nosia" },
+            { english:"Vomiting", spanish:"Vómito", phonetic:"vomiting" },
+            { english:"Diarrhea", spanish:"Diarrea", phonetic:"dairia" },
+            { english:"Dizziness", spanish:"Mareo", phonetic:"dizines" },
+            { english:"Fatigue", spanish:"Fatiga", phonetic:"fatig" },
+            { english:"Weakness", spanish:"Debilidad", phonetic:"wiknes" },
+            { english:"Pain", spanish:"Dolor", phonetic:"pein" },
+            { english:"Sharp pain", spanish:"Dolor agudo", phonetic:"sharp pein" },
+            { english:"Dull pain", spanish:"Dolor sordo", phonetic:"dal pein" },
+            { english:"Medicine", spanish:"Medicina", phonetic:"medisin" },
+            { english:"Pill", spanish:"Pastilla", phonetic:"pil" },
+            { english:"Tablet", spanish:"Tableta", phonetic:"tablet" },
+            { english:"Capsule", spanish:"Cápsula", phonetic:"kapsul" },
+            { english:"Syrup", spanish:"Jarabe", phonetic:"sirap" },
+            { english:"Injection", spanish:"Inyección", phonetic:"inyekshon" },
+            { english:"Prescription", spanish:"Receta médica", phonetic:"priskripshon" },
+            { english:"Dosage", spanish:"Dosis", phonetic:"dousich" },
+            { english:"Side effects", spanish:"Efectos secundarios", phonetic:"said efekts" },
+            { english:"Allergy", spanish:"Alergia", phonetic:"aleryi" },
+            { english:"Appointment", spanish:"Cita", phonetic:"apointment" },
+            { english:"Doctor", spanish:"Doctor/Médico", phonetic:"doktor" },
+            { english:"Nurse", spanish:"Enfermero/a", phonetic:"ners" },
+            { english:"Patient", spanish:"Paciente", phonetic:"peishent" },
+            { english:"Symptoms", spanish:"Síntomas", phonetic:"simptoms" },
+            { english:"Diagnosis", spanish:"Diagnóstico", phonetic:"daiagnousis" },
+            { english:"Treatment", spanish:"Tratamiento", phonetic:"tritment" },
+            { english:"Recovery", spanish:"Recuperación", phonetic:"rikoveri" },
+            { english:"Rest", spanish:"Descansar", phonetic:"rest" },
+            { english:"Checkup", spanish:"Chequeo", phonetic:"chekap" },
+            { english:"Blood pressure", spanish:"Presión arterial", phonetic:"blad preshur" },
+            { english:"Temperature", spanish:"Temperatura", phonetic:"temperachur" },
+            { english:"Thermometer", spanish:"Termómetro", phonetic:"zermomiter" },
+            { english:"Stethoscope", spanish:"Estetoscopio", phonetic:"stetoskoup" },
+            { english:"X-ray", spanish:"Rayos X", phonetic:"eks-rei" },
+            { english:"Blood test", spanish:"Análisis de sangre", phonetic:"blad test" },
+            { english:"Insurance", spanish:"Seguro médico", phonetic:"insurans" },
+            { english:"Emergency room", spanish:"Sala de emergencias", phonetic:"imerjensi rum" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"I have a _____ and sore throat.", options:["headache","table","chair","car"], answer:"headache", hint:"Dolor de cabeza" },
+            { type:"fillBlank", question:"Do you have a _____?", options:["car","fever","book","pen"], answer:"fever", hint:"Fiebre" },
+            { type:"fillBlank", question:"Take this _____ twice a day.", options:["food","medicine","water","book"], answer:"medicine", hint:"Medicina" },
+            { type:"matching", pairs:[{english:"Headache",spanish:"Dolor de cabeza"},{english:"Fever",spanish:"Fiebre"},{english:"Cough",spanish:"Tos"},{english:"Pain",spanish:"Dolor"}] },
+            { type:"fillBlank", question:"You should _____ and drink lots of water.", options:["run","rest","dance","work"], answer:"rest", hint:"Descansar" }
+          ]
+        },
+        { id:8, title:"At the Airport", titleEs:"En el Aeropuerto", icon:"✈️", category:"travel", difficulty:"intermediate",
+          dialogues: [
+            { speaker:"Agent", english:"Good morning! May I see your passport and booking confirmation?", spanish:"¡Buenos días! ¿Me permite ver su pasaporte y confirmación de reserva?", phonetic:"gud morning! mei ai si yor pasport and buking konfirmeishon?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Of course! Here's my passport and the confirmation on my phone.", spanish:"¡Por supuesto! Aquí está mi pasaporte y la confirmación en mi teléfono.", correct:true },
+                { english:"I don't have a passport.", spanish:"No tengo pasaporte.", correct:false },
+                { english:"Where is the bathroom?", spanish:"¿Dónde está el baño?", correct:false }
+            ]},
+            { speaker:"Agent", english:"Perfect. Are you checking any bags today?", spanish:"Perfecto. ¿Va a documentar alguna maleta hoy?", phonetic:"perfekt. ar yu cheking eni bags tudei?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'd like to check one bag and keep one as carry-on.", spanish:"Quisiera documentar una maleta y quedarme con una de mano.", correct:true },
+                { english:"I don't have any bags.", spanish:"No tengo maletas.", correct:false },
+                { english:"My bag is very heavy.", spanish:"Mi maleta es muy pesada.", correct:false }
+            ]},
+            { speaker:"Agent", english:"Would you like a window seat or an aisle seat?", spanish:"¿Prefiere asiento de ventana o de pasillo?", phonetic:"wud yu laik a windou sit or an ail sit?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Window seat, please. I love watching the clouds.", spanish:"Asiento de ventana, por favor. Me encanta ver las nubes.", correct:true },
+                { english:"I don't want to fly.", spanish:"No quiero volar.", correct:false },
+                { english:"The seats are uncomfortable.", spanish:"Los asientos son incómodos.", correct:false }
+            ]},
+            { speaker:"Agent", english:"Here's your boarding pass. Gate B7, boarding at 2:30 PM. Have a safe flight!", spanish:"Aquí está su pase de abordar. Puerta B7, abordaje a las 2:30 PM. ¡Buen viaje!", phonetic:"hirs yor bording pas. geit bi-seven, bording at tu-zerti pi-em. hav a seif flait!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Thank you! Where is the security checkpoint from here?", spanish:"¡Gracias! ¿Dónde está el punto de seguridad desde aquí?", correct:true },
+                { english:"I don't want a boarding pass.", spanish:"No quiero un pase de abordar.", correct:false },
+                { english:"What time is it?", spanish:"¿Qué hora es?", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Passport", spanish:"Pasaporte", phonetic:"pasport" },
+            { english:"Visa", spanish:"Visa", phonetic:"visa" },
+            { english:"ID card", spanish:"Identificación", phonetic:"ai-di kard" },
+            { english:"Boarding pass", spanish:"Pase de abordar", phonetic:"bording pas" },
+            { english:"Ticket", spanish:"Boleto", phonetic:"tiket" },
+            { english:"E-ticket", spanish:"Boleto electrónico", phonetic:"i-tiket" },
+            { english:"Confirmation", spanish:"Confirmación", phonetic:"konfirmeishon" },
+            { english:"Reservation", spanish:"Reservación", phonetic:"rezerveishon" },
+            { english:"Gate", spanish:"Puerta", phonetic:"geit" },
+            { english:"Terminal", spanish:"Terminal", phonetic:"terminal" },
+            { english:"Check-in", spanish:"Registro", phonetic:"chek-in" },
+            { english:"Check-in counter", spanish:"Mostrador de registro", phonetic:"chek-in kaunter" },
+            { english:"Luggage", spanish:"Equipaje", phonetic:"lagich" },
+            { english:"Baggage", spanish:"Equipaje", phonetic:"bagich" },
+            { english:"Carry-on", spanish:"Equipaje de mano", phonetic:"kari-on" },
+            { english:"Checked bag", spanish:"Maleta documentada", phonetic:"chekt bag" },
+            { english:"Suitcase", spanish:"Maleta", phonetic:"sutkeis" },
+            { english:"Backpack", spanish:"Mochila", phonetic:"bakpak" },
+            { english:"Baggage claim", spanish:"Reclamo de equipaje", phonetic:"bagich kleim" },
+            { english:"Security", spanish:"Seguridad", phonetic:"sekiuriti" },
+            { english:"Security checkpoint", spanish:"Punto de seguridad", phonetic:"sekiuriti chekpoint" },
+            { english:"Metal detector", spanish:"Detector de metales", phonetic:"metal ditektor" },
+            { english:"Customs", spanish:"Aduana", phonetic:"kastoms" },
+            { english:"Immigration", spanish:"Inmigración", phonetic:"imigreishon" },
+            { english:"Flight", spanish:"Vuelo", phonetic:"flait" },
+            { english:"Direct flight", spanish:"Vuelo directo", phonetic:"direkt flait" },
+            { english:"Connecting flight", spanish:"Vuelo de conexión", phonetic:"konekting flait" },
+            { english:"Layover", spanish:"Escala", phonetic:"leiovr" },
+            { english:"Departure", spanish:"Salida", phonetic:"diparchur" },
+            { english:"Arrival", spanish:"Llegada", phonetic:"araival" },
+            { english:"Delay", spanish:"Retraso", phonetic:"dilei" },
+            { english:"Cancelled", spanish:"Cancelado", phonetic:"kanseld" },
+            { english:"On time", spanish:"A tiempo", phonetic:"on taim" },
+            { english:"Boarding", spanish:"Abordaje", phonetic:"bording" },
+            { english:"Takeoff", spanish:"Despegue", phonetic:"teikof" },
+            { english:"Landing", spanish:"Aterrizaje", phonetic:"landing" },
+            { english:"Window seat", spanish:"Asiento de ventana", phonetic:"windou sit" },
+            { english:"Aisle seat", spanish:"Asiento de pasillo", phonetic:"ail sit" },
+            { english:"Middle seat", spanish:"Asiento del medio", phonetic:"midol sit" },
+            { english:"Emergency exit", spanish:"Salida de emergencia", phonetic:"imerjensi eksit" },
+            { english:"Seat belt", spanish:"Cinturón de seguridad", phonetic:"sit belt" },
+            { english:"Overhead bin", spanish:"Compartimento superior", phonetic:"ouverhed bin" },
+            { english:"Pilot", spanish:"Piloto", phonetic:"pailot" },
+            { english:"Flight attendant", spanish:"Auxiliar de vuelo", phonetic:"flait atendant" },
+            { english:"Turbulence", spanish:"Turbulencia", phonetic:"terbiulens" },
+            { english:"Duty-free", spanish:"Libre de impuestos", phonetic:"diuti-fri" },
+            { english:"Currency exchange", spanish:"Cambio de moneda", phonetic:"karensi ekscheinch" },
+            { english:"Lost and found", spanish:"Objetos perdidos", phonetic:"lost and faund" },
+            { english:"International", spanish:"Internacional", phonetic:"internashonal" },
+            { english:"Domestic", spanish:"Nacional", phonetic:"domestik" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"May I see your _____, please?", options:["passport","food","dance","music"], answer:"passport", hint:"Pasaporte" },
+            { type:"fillBlank", question:"Here's your _____ pass.", options:["food","boarding","dance","music"], answer:"boarding", hint:"Pase de abordar" },
+            { type:"fillBlank", question:"Your _____ is B7.", options:["food","gate","music","dance"], answer:"gate", hint:"Puerta" },
+            { type:"matching", pairs:[{english:"Flight",spanish:"Vuelo"},{english:"Luggage",spanish:"Equipaje"},{english:"Passport",spanish:"Pasaporte"},{english:"Arrival",spanish:"Llegada"}] },
+            { type:"fillBlank", question:"Have a safe _____!", options:["food","flight","dance","sleep"], answer:"flight", hint:"Vuelo" }
+          ]
+        },
+        { id:9, title:"Making New Friends", titleEs:"Haciendo Nuevos Amigos", icon:"🤝", category:"social", difficulty:"beginner",
+          dialogues: [
+            { speaker:"Sam", english:"Hey! I noticed you're new here. My name is Sam. Mind if I join you?", spanish:"¡Hola! Noté que eres nuevo aquí. Me llamo Sam. ¿Te importa si me siento contigo?", phonetic:"hei! ai noutist yor niu hir. mai neim iz Sam. maind if ai yoin yu?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Of course! Please, sit down. I'm Maria. Nice to meet you!", spanish:"¡Claro! Por favor, siéntate. Soy María. ¡Mucho gusto!", correct:true },
+                { english:"I don't want company.", spanish:"No quiero compañía.", correct:false },
+                { english:"I have to go now.", spanish:"Tengo que irme ahora.", correct:false }
+            ]},
+            { speaker:"Sam", english:"Nice to meet you! So, what do you like to do for fun?", spanish:"¡Mucho gusto! Entonces, ¿qué te gusta hacer para divertirte?", phonetic:"nais tu mit yu! sou, wat du yu laik tu du for fan?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I love reading, hiking, and trying new restaurants. You?", spanish:"Me encanta leer, hacer senderismo y probar nuevos restaurantes. ¿Y tú?", correct:true },
+                { english:"I don't do anything.", spanish:"No hago nada.", correct:false },
+                { english:"That's a personal question.", spanish:"Esa es una pregunta personal.", correct:false }
+            ]},
+            { speaker:"Sam", english:"I love hiking too! Have you been to the mountain trail nearby?", spanish:"¡A mí también me encanta el senderismo! ¿Has ido al sendero cercano?", phonetic:"ai lav haiking tu! hav yu bin tu de maunten treil nirbai?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"No, not yet! Would you recommend it?", spanish:"¡No, todavía no! ¿Lo recomendarías?", correct:true },
+                { english:"I don't like mountains.", spanish:"No me gustan las montañas.", correct:false },
+                { english:"Mountains are dangerous.", spanish:"Las montañas son peligrosas.", correct:false }
+            ]},
+            { speaker:"Sam", english:"Absolutely! We should go together sometime!", spanish:"¡Absolutamente! ¡Deberíamos ir juntos algún día!", phonetic:"absoliutli! wi shud gou tugeder samtaim!" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'd love that! Here's my number. Let's plan something!", spanish:"¡Me encantaría! Aquí está mi número. ¡Planeemos algo!", correct:true },
+                { english:"I don't have a phone.", spanish:"No tengo teléfono.", correct:false },
+                { english:"I'm busy every weekend.", spanish:"Estoy ocupado todos los fines de semana.", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Friend", spanish:"Amigo/a", phonetic:"frend" },
+            { english:"Best friend", spanish:"Mejor amigo/a", phonetic:"best frend" },
+            { english:"Acquaintance", spanish:"Conocido/a", phonetic:"akweintans" },
+            { english:"Colleague", spanish:"Colega", phonetic:"kolig" },
+            { english:"Neighbor", spanish:"Vecino/a", phonetic:"neibor" },
+            { english:"Roommate", spanish:"Compañero de cuarto", phonetic:"rummeit" },
+            { english:"Classmate", spanish:"Compañero de clase", phonetic:"klasmeit" },
+            { english:"Friendship", spanish:"Amistad", phonetic:"frendship" },
+            { english:"Hobbies", spanish:"Pasatiempos", phonetic:"habis" },
+            { english:"Interest", spanish:"Interés", phonetic:"intrest" },
+            { english:"Fun", spanish:"Diversión", phonetic:"fan" },
+            { english:"Exciting", spanish:"Emocionante", phonetic:"eksaiting" },
+            { english:"Boring", spanish:"Aburrido", phonetic:"boring" },
+            { english:"Interesting", spanish:"Interesante", phonetic:"intresting" },
+            { english:"Weekend", spanish:"Fin de semana", phonetic:"wikend" },
+            { english:"Free time", spanish:"Tiempo libre", phonetic:"fri taim" },
+            { english:"Plans", spanish:"Planes", phonetic:"plans" },
+            { english:"Together", spanish:"Juntos", phonetic:"tugeder" },
+            { english:"Hang out", spanish:"Pasar el rato", phonetic:"hang aut" },
+            { english:"Get together", spanish:"Reunirse", phonetic:"get tugeder" },
+            { english:"Meet up", spanish:"Encontrarse", phonetic:"mit ap" },
+            { english:"Invite", spanish:"Invitar", phonetic:"invait" },
+            { english:"Invitation", spanish:"Invitación", phonetic:"inviteishon" },
+            { english:"Party", spanish:"Fiesta", phonetic:"parti" },
+            { english:"Celebration", spanish:"Celebración", phonetic:"selebreishon" },
+            { english:"Birthday", spanish:"Cumpleaños", phonetic:"berzdei" },
+            { english:"Gift", spanish:"Regalo", phonetic:"gift" },
+            { english:"Present", spanish:"Regalo", phonetic:"prezent" },
+            { english:"Surprise", spanish:"Sorpresa", phonetic:"serpraiz" },
+            { english:"Text", spanish:"Mensaje de texto", phonetic:"tekst" },
+            { english:"Call", spanish:"Llamar", phonetic:"kol" },
+            { english:"Phone number", spanish:"Número de teléfono", phonetic:"foun namber" },
+            { english:"Social media", spanish:"Redes sociales", phonetic:"soushal midia" },
+            { english:"Follow", spanish:"Seguir", phonetic:"folou" },
+            { english:"Like", spanish:"Me gusta", phonetic:"laik" },
+            { english:"Share", spanish:"Compartir", phonetic:"sher" },
+            { english:"Comment", spanish:"Comentar", phonetic:"koment" },
+            { english:"Meet", spanish:"Conocer", phonetic:"mit" },
+            { english:"Introduce", spanish:"Presentar", phonetic:"introduis" },
+            { english:"Nice", spanish:"Agradable", phonetic:"nais" },
+            { english:"Kind", spanish:"Amable", phonetic:"kaind" },
+            { english:"Friendly", spanish:"Amigable", phonetic:"frendli" },
+            { english:"Funny", spanish:"Gracioso", phonetic:"fani" },
+            { english:"Honest", spanish:"Honesto", phonetic:"onest" },
+            { english:"Loyal", spanish:"Leal", phonetic:"loial" },
+            { english:"Trust", spanish:"Confianza", phonetic:"trast" },
+            { english:"Support", spanish:"Apoyo", phonetic:"saport" },
+            { english:"Help", spanish:"Ayuda", phonetic:"help" },
+            { english:"Advice", spanish:"Consejo", phonetic:"advais" },
+            { english:"Listen", spanish:"Escuchar", phonetic:"lisen" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"What do you like to do for _____?", options:["fun","eat","sleep","car"], answer:"fun", hint:"Diversión" },
+            { type:"fillBlank", question:"We should go _____ sometime.", options:["eating","together","sleeping","running"], answer:"together", hint:"Juntos" },
+            { type:"fillBlank", question:"Let's make _____ for the weekend.", options:["food","plans","beds","cars"], answer:"plans", hint:"Planes" },
+            { type:"matching", pairs:[{english:"Friend",spanish:"Amigo"},{english:"Fun",spanish:"Diversión"},{english:"Together",spanish:"Juntos"},{english:"Meet",spanish:"Conocer"}] },
+            { type:"fillBlank", question:"It was nice _____ you!", options:["eating","meeting","sleeping","running"], answer:"meeting", hint:"Conocer" }
+          ]
+        },
+        { id:10, title:"Emergency Situations", titleEs:"Situaciones de Emergencia", icon:"🚨", category:"emergency", difficulty:"advanced",
+          dialogues: [
+            { speaker:"Operator", english:"911, what's your emergency?", spanish:"911, ¿cuál es su emergencia?", phonetic:"nain-wan-wan, wats yor imerjensi?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I need an ambulance! Someone has fallen and they're not responding.", spanish:"¡Necesito una ambulancia! Alguien se cayó y no responde.", correct:true },
+                { english:"I'm lost.", spanish:"Estoy perdido.", correct:false },
+                { english:"Hello, how are you?", spanish:"Hola, ¿cómo estás?", correct:false }
+            ]},
+            { speaker:"Operator", english:"Stay calm. What is your location? I'm sending help now.", spanish:"Mantenga la calma. ¿Cuál es su ubicación? Estoy enviando ayuda ahora.", phonetic:"stei kam. wat iz yor lokeishon? aim sending help nau." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"I'm at 123 Main Street, in front of the coffee shop. Please hurry!", spanish:"Estoy en la calle Main 123, frente a la cafetería. ¡Por favor, dense prisa!", correct:true },
+                { english:"I don't know where I am.", spanish:"No sé dónde estoy.", correct:false },
+                { english:"I'll call you back later.", spanish:"Te llamo después.", correct:false }
+            ]},
+            { speaker:"Operator", english:"Help is on the way. Is the person breathing?", spanish:"La ayuda va en camino. ¿La persona está respirando?", phonetic:"help iz on de wei. iz de person briizing?" },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Yes, they're breathing but unconscious. I can feel a weak pulse.", spanish:"Sí, está respirando pero inconsciente. Puedo sentir un pulso débil.", correct:true },
+                { english:"I don't know how to check.", spanish:"No sé cómo verificar.", correct:false },
+                { english:"I'm scared to touch them.", spanish:"Tengo miedo de tocarlos.", correct:false }
+            ]},
+            { speaker:"Operator", english:"Good. Don't move them. Keep them warm. The ambulance will arrive soon.", spanish:"Bien. No los mueva. Manténgalos calientes. La ambulancia llegará pronto.", phonetic:"gud. dount muv dem. kip dem worm. de ambiulans wil araiv sun." },
+            { speaker:"You", isResponse:true, options:[
+                { english:"Okay, I put my jacket over them. I can hear the sirens now!", spanish:"Está bien, puse mi chaqueta sobre ellos. ¡Ya puedo escuchar las sirenas!", correct:true },
+                { english:"I don't have a jacket.", spanish:"No tengo chaqueta.", correct:false },
+                { english:"Three minutes is too long.", spanish:"Tres minutos es mucho tiempo.", correct:false }
+            ]}
+          ],
+          vocabulary: [
+            { english:"Emergency", spanish:"Emergencia", phonetic:"imerjensi" },
+            { english:"Urgent", spanish:"Urgente", phonetic:"eryent" },
+            { english:"Help", spanish:"Ayuda", phonetic:"help" },
+            { english:"Help me!", spanish:"¡Ayúdame!", phonetic:"help mi!" },
+            { english:"Call 911", spanish:"Llama al 911", phonetic:"kol nain-wan-wan" },
+            { english:"Ambulance", spanish:"Ambulancia", phonetic:"ambiulans" },
+            { english:"Paramedic", spanish:"Paramédico", phonetic:"paramedik" },
+            { english:"EMT", spanish:"Técnico de emergencias", phonetic:"i-em-ti" },
+            { english:"First aid", spanish:"Primeros auxilios", phonetic:"ferst eid" },
+            { english:"CPR", spanish:"RCP (Reanimación)", phonetic:"si-pi-ar" },
+            { english:"Police", spanish:"Policía", phonetic:"polis" },
+            { english:"Police officer", spanish:"Oficial de policía", phonetic:"polis ofiser" },
+            { english:"Fire department", spanish:"Bomberos", phonetic:"fair dipartment" },
+            { english:"Firefighter", spanish:"Bombero", phonetic:"fairfaiter" },
+            { english:"Fire truck", spanish:"Camión de bomberos", phonetic:"fair trak" },
+            { english:"Fire", spanish:"Fuego/Incendio", phonetic:"fair" },
+            { english:"Smoke", spanish:"Humo", phonetic:"smouk" },
+            { english:"Evacuate", spanish:"Evacuar", phonetic:"ivakiueit" },
+            { english:"Exit", spanish:"Salida", phonetic:"eksit" },
+            { english:"Accident", spanish:"Accidente", phonetic:"aksidant" },
+            { english:"Car accident", spanish:"Accidente de auto", phonetic:"kar aksidant" },
+            { english:"Crash", spanish:"Choque", phonetic:"krash" },
+            { english:"Injured", spanish:"Herido", phonetic:"inyurd" },
+            { english:"Hurt", spanish:"Lastimado", phonetic:"jert" },
+            { english:"Wound", spanish:"Herida", phonetic:"wund" },
+            { english:"Bleeding", spanish:"Sangrando", phonetic:"bliding" },
+            { english:"Blood", spanish:"Sangre", phonetic:"blad" },
+            { english:"Broken bone", spanish:"Hueso roto", phonetic:"brouken boun" },
+            { english:"Fracture", spanish:"Fractura", phonetic:"frakchur" },
+            { english:"Burn", spanish:"Quemadura", phonetic:"bern" },
+            { english:"Breathing", spanish:"Respirando", phonetic:"briizing" },
+            { english:"Not breathing", spanish:"No respira", phonetic:"not briizing" },
+            { english:"Unconscious", spanish:"Inconsciente", phonetic:"ankonshos" },
+            { english:"Conscious", spanish:"Consciente", phonetic:"konshos" },
+            { english:"Pulse", spanish:"Pulso", phonetic:"pals" },
+            { english:"Heartbeat", spanish:"Latido del corazón", phonetic:"jartbit" },
+            { english:"Heart attack", spanish:"Ataque al corazón", phonetic:"jart atak" },
+            { english:"Stroke", spanish:"Derrame cerebral", phonetic:"strouk" },
+            { english:"Choking", spanish:"Ahogándose", phonetic:"chouking" },
+            { english:"Allergic reaction", spanish:"Reacción alérgica", phonetic:"aleryik riakshon" },
+            { english:"Poison", spanish:"Veneno", phonetic:"poizon" },
+            { english:"Overdose", spanish:"Sobredosis", phonetic:"ouverdous" },
+            { english:"Stay calm", spanish:"Mantén la calma", phonetic:"stei kam" },
+            { english:"Don't move", spanish:"No se mueva", phonetic:"dount muv" },
+            { english:"Location", spanish:"Ubicación", phonetic:"lokeishon" },
+            { english:"Address", spanish:"Dirección", phonetic:"adres" },
+            { english:"Stretcher", spanish:"Camilla", phonetic:"strecher" },
+            { english:"Hospital", spanish:"Hospital", phonetic:"jospital" },
+            { english:"Emergency room", spanish:"Sala de emergencias", phonetic:"imerjensi rum" },
+            { english:"Survivor", spanish:"Sobreviviente", phonetic:"servaiver" }
+          ],
+          exercises: [
+            { type:"fillBlank", question:"I need an _____! Someone is hurt.", options:["ambulance","car","bus","train"], answer:"ambulance", hint:"Ambulancia" },
+            { type:"fillBlank", question:"Stay _____. Help is coming.", options:["happy","calm","hungry","tired"], answer:"calm", hint:"Calmado" },
+            { type:"fillBlank", question:"What is your _____? Where are you?", options:["name","location","food","music"], answer:"location", hint:"Ubicación" },
+            { type:"matching", pairs:[{english:"Emergency",spanish:"Emergencia"},{english:"Help",spanish:"Ayuda"},{english:"Ambulance",spanish:"Ambulancia"},{english:"Police",spanish:"Policía"}] },
+            { type:"fillBlank", question:"Is the person _____?", options:["eating","breathing","dancing","singing"], answer:"breathing", hint:"Respirando" }
+          ]
+        }
+    ];
+
+    // Build vocabulary list
+    const allVocab = lessons.flatMap(l => l.vocabulary.map(v => ({...v, cat: l.title})));
+    
+    // Achievements
+    const achievements = [
+        { id:1, name:"First Steps", icon:"👶", check: s => s.completedLessons.length >= 1 },
+        { id:2, name:"Word Collector", icon:"📚", check: s => s.vocabLearned.length >= 50 },
+        { id:3, name:"Streak Master", icon:"🔥", check: s => s.streak >= 7 },
+        { id:4, name:"Conversation Pro", icon:"💬", check: s => s.completedLessons.length >= 5 },
+        { id:5, name:"Perfect Score", icon:"⭐", check: s => s.totalAttempts > 0 && (s.totalScore/s.totalAttempts) >= 0.9 },
+        { id:6, name:"Explorer", icon:"🗺️", check: s => new Set(s.completedLessons.map(id => lessons.find(l=>l.id===id)?.category)).size >= 5 },
+        { id:7, name:"Dedicated Learner", icon:"🎓", check: s => s.completedLessons.length >= lessons.length },
+        { id:8, name:"Quick Learner", icon:"⚡", check: s => s.completedLessons.length >= 3 }
+    ];
+
+    // State
+    let state = { completedLessons:[], lessonProgress:{}, vocabLearned:[], totalScore:0, totalAttempts:0, streak:0, lastVisit:null };
+    let current = { lesson:null, dialogueIdx:0, score:0, attempts:0, exIdx:0, exScore:0, showTrans:false, showPron:false, autoPlay:false, speed:0.8, selectedAns:null, matchSel:null, matchedPairs:[] };
+
+    // Speech
+    let enVoice = null, esVoice = null;
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+        loadState();
+        createBubbles();
+        initSpeech();
+        updateStreak();
+        updateDashboard();
+        renderLessons();
+        renderVocab();
+    });
+
+    function loadState() { const s = localStorage.getItem('engAdvState'); if(s) state = {...state, ...JSON.parse(s)}; }
+    function saveState() { localStorage.setItem('engAdvState', JSON.stringify(state)); }
+    function updateStreak() {
+        const today = new Date().toDateString();
+        if(state.lastVisit !== today) {
+            const y = new Date(); y.setDate(y.getDate()-1);
+            if(state.lastVisit === y.toDateString()) state.streak++; else if(state.lastVisit !== today) state.streak = 1;
+            state.lastVisit = today; saveState();
+        }
+    }
+    function createBubbles() {
+        const c = document.getElementById('bgBubbles');
+        for(let i=0;i<12;i++) {
+            const b = document.createElement('div'); b.className = 'bubble';
+            const sz = Math.random()*100+50;
+            b.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:radial-gradient(circle,rgba(${Math.random()*100+155},${Math.random()*100+100},${Math.random()*155+100},0.1) 0%,transparent 70%);animation-delay:${Math.random()*5}s;animation-duration:${Math.random()*10+12}s;`;
+            c.appendChild(b);
+        }
+    }
+    function initSpeech() {
+        if(!('speechSynthesis' in window)) return;
+        const load = () => {
+            const v = speechSynthesis.getVoices();
+            if(v.length) {
+                // US English voice priority
+                enVoice = v.find(x=>x.lang==='en-US') || v.find(x=>x.lang.startsWith('en')) || v[0];
+                // Colombian Spanish voice priority, then Latin American, then Spain
+                esVoice = v.find(x=>x.lang==='es-CO') || v.find(x=>x.lang==='es-419') || v.find(x=>x.lang==='es-MX') || v.find(x=>x.lang==='es-US') || v.find(x=>x.lang.startsWith('es')) || v[0];
+            }
+        };
+        if(speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = load;
+        load(); setTimeout(load, 1000);
+    }
+    function speak(text, lang='en', btn=null) {
+        if(!('speechSynthesis' in window)) return;
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = current.speed;
+        if(lang==='en' && enVoice) { u.voice = enVoice; u.lang = 'en-US'; }
+        else if(lang==='es' && esVoice) { u.voice = esVoice; u.lang = esVoice.lang || 'es-CO'; }
+        if(btn) { btn.classList.add('playing'); u.onend = () => btn.classList.remove('playing'); u.onerror = () => btn.classList.remove('playing'); }
+        speechSynthesis.speak(u);
+    }
+
+    // Navigation
+    function showView(v) {
+        document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(e => e.classList.remove('active'));
+        if(v==='dashboard') { document.getElementById('dashboardView').classList.add('active'); document.getElementById('navDash').classList.add('active'); updateDashboard(); }
+        else if(v==='lessons') { document.getElementById('lessonsView').classList.add('active'); document.getElementById('navLess').classList.add('active'); renderLessons(); }
+        else if(v==='vocab') { document.getElementById('vocabView').classList.add('active'); document.getElementById('navVocab').classList.add('active'); renderVocab(); }
+    }
+
+    // Dashboard
+    function updateDashboard() {
+        document.getElementById('statLessons').textContent = state.completedLessons.length;
+        document.getElementById('statVocab').textContent = state.vocabLearned.length;
+        const avg = state.totalAttempts > 0 ? Math.round((state.totalScore/state.totalAttempts)*100) : 0;
+        document.getElementById('statScore').textContent = avg + '%';
+        document.getElementById('statStreak').textContent = state.streak;
+        const overall = Math.round((state.completedLessons.length / lessons.length) * 100);
+        document.getElementById('overallProgress').style.width = overall + '%';
+        document.getElementById('overallProgress').textContent = overall + '%';
+        document.getElementById('lessonProgressList').innerHTML = lessons.map(l => {
+            const p = state.lessonProgress[l.id] || 0;
+            const done = state.completedLessons.includes(l.id);
+            return `<div class="lesson-progress-item"><span class="lp-icon">${l.icon}</span><div class="lp-info"><div class="lp-name">${l.title}</div><div class="mini-progress"><div class="mini-progress-fill" style="width:${p}%"></div></div></div><span>${done?'✅':p>0?'🔄':'⭕'}</span></div>`;
+        }).join('');
+        document.getElementById('achievementsGrid').innerHTML = achievements.map(a => {
+            const unlocked = a.check(state);
+            return `<div class="achievement ${unlocked?'unlocked':'locked'}"><div class="ach-icon">${a.icon}</div><div class="ach-name">${a.name}</div></div>`;
+        }).join('');
+    }
+
+    // Lessons
+    function renderLessons(filter='all') {
+        const filtered = filter==='all' ? lessons : lessons.filter(l => l.category === filter);
+        document.getElementById('lessonsGrid').innerHTML = filtered.map(l => {
+            const p = state.lessonProgress[l.id] || 0;
+            const done = state.completedLessons.includes(l.id);
+            return `<div class="lesson-card" onclick="openLesson(${l.id})">${done?'<div class="completed-badge">✓</div>':''}<span class="difficulty ${l.difficulty}">${l.difficulty}</span><div class="lc-icon">${l.icon}</div><h3>${l.title}</h3><p class="lc-subtitle">${l.titleEs}</p><div class="lc-meta"><span>💬 ${Math.ceil(l.dialogues.length/2)}</span><span>📝 ${l.vocabulary.length}</span><span>✏️ ${l.exercises.length}</span></div><div class="card-progress"><div class="card-progress-fill" style="width:${p}%"></div></div></div>`;
+        }).join('');
+    }
+    function filterLessons(cat, btn) {
+        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        renderLessons(cat);
+    }
+
+    // Vocabulary
+    function renderVocab(search='') {
+        let filtered = allVocab;
+        if(search) { const s = search.toLowerCase(); filtered = filtered.filter(v => v.english.toLowerCase().includes(s) || v.spanish.toLowerCase().includes(s)); }
+        document.getElementById('vocabGrid').innerHTML = filtered.map(v => `<div class="vocab-card"><button class="vc-audio" onclick="speak('${v.english.replace(/'/g,"\\'")}','en',this)">🔊</button><div class="vc-text"><div class="vc-en">${v.english}</div><div class="vc-es">${v.spanish}</div><div class="vc-ph">/${v.phonetic}/</div></div></div>`).join('');
+    }
+    function filterVocab() { renderVocab(document.getElementById('vocabSearch').value); }
+
+    // Open Lesson
+    function openLesson(id) {
+        current.lesson = lessons.find(l => l.id === id);
+        current.dialogueIdx = 0; current.score = 0; current.attempts = 0; current.selectedAns = null;
+        current.exIdx = 0; current.exScore = 0; current.matchSel = null; current.matchedPairs = [];
+        document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
+        document.getElementById('lessonDetailView').classList.add('active');
+        document.getElementById('ldIcon').textContent = current.lesson.icon;
+        document.getElementById('ldTitle').textContent = current.lesson.title;
+        document.getElementById('ldSubtitle').textContent = current.lesson.titleEs;
+        document.getElementById('ldScore').textContent = '0/0';
+        showTab('conv');
+        renderLessonVocab();
+    }
+    function showTab(tab) {
+        document.querySelectorAll('.lesson-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        if(tab==='conv') { document.getElementById('tabConv').classList.add('active'); document.getElementById('convTab').classList.add('active'); startConv(); }
+        else if(tab==='vocabTab') { document.getElementById('tabVocab').classList.add('active'); document.getElementById('vocabTabContent').classList.add('active'); }
+        else if(tab==='exercises') { document.getElementById('tabEx').classList.add('active'); document.getElementById('exercisesTab').classList.add('active'); renderExercise(); }
+    }
+
+    // Conversation
+    function startConv() {
+        current.dialogueIdx = 0; current.score = 0; current.attempts = 0; current.selectedAns = null;
+        document.getElementById('chatArea').innerHTML = '';
+        document.getElementById('feedbackBar').classList.add('hidden');
+        document.getElementById('responseArea').classList.add('hidden');
+        document.getElementById('ldScore').textContent = '0/0';
+        document.getElementById('togTrans').classList.toggle('active', current.showTrans);
+        document.getElementById('togPron').classList.toggle('active', current.showPron);
+        document.getElementById('togAuto').classList.toggle('active', current.autoPlay);
+        processDialogue();
+    }
+    function processDialogue() {
+        if(current.dialogueIdx >= current.lesson.dialogues.length) { showConvComplete(); return; }
+        const d = current.lesson.dialogues[current.dialogueIdx];
+        if(d.isResponse) { showOptions(d); }
+        else { showTyping(d.speaker); setTimeout(() => { removeTyping(); addMsg(d); if(current.autoPlay) setTimeout(() => speak(d.english,'en'), 300); current.dialogueIdx++; setTimeout(processDialogue, current.autoPlay?2500:400); }, 900); }
+    }
+    function showTyping(speaker) {
+        const c = document.getElementById('chatArea');
+        const cls = ['c1','c2','c3','c4'][Math.floor(Math.random()*4)];
+        c.innerHTML += `<div class="typing-indicator" id="typingInd"><div class="avatar ${cls}">${speaker.charAt(0)}</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+        c.scrollTop = c.scrollHeight;
+    }
+    function removeTyping() { const t = document.getElementById('typingInd'); if(t) t.remove(); }
+    function addMsg(d) {
+        const c = document.getElementById('chatArea');
+        const isU = d.speaker === 'You';
+        const cls = isU ? 'you' : ['c1','c2','c3','c4'][Math.floor(Math.random()*4)];
+        c.innerHTML += `<div class="message ${isU?'user':''}"><div class="avatar ${cls}">${isU?'👤':d.speaker.charAt(0)}</div><div class="msg-bubble"><div class="msg-content"><div class="msg-text"><p class="english">${d.english}</p><p class="spanish ${current.showTrans?'show':''}">🇪🇸 ${d.spanish}</p>${d.phonetic?`<p class="phonetic ${current.showPron?'show':''}">📝 /${d.phonetic}/</p>`:''}</div><div class="audio-btns"><button class="audio-btn en" onclick="event.stopPropagation();speak('${d.english.replace(/'/g,"\\'")}','en',this)">🇺🇸</button><button class="audio-btn es" onclick="event.stopPropagation();speak('${d.spanish.replace(/'/g,"\\'")}','es',this)">🇪🇸</button></div></div></div></div>`;
+        c.scrollTop = c.scrollHeight;
+    }
+    function showOptions(d) {
+        document.getElementById('optionsBox').innerHTML = d.options.map((o,i) => `<button class="option-btn" onclick="selectAns(${i})" id="opt${i}"><div class="opt-text"><p class="opt-en">${o.english}</p><p class="opt-es">${o.spanish}</p></div><div class="opt-audio-btns"><button class="opt-audio-btn en" onclick="event.stopPropagation();speak('${o.english.replace(/'/g,"\\'")}','en',this)">🇺🇸</button><button class="opt-audio-btn es" onclick="event.stopPropagation();speak('${o.spanish.replace(/'/g,"\\'")}','es',this)">🇪🇸</button></div></button>`).join('');
+        document.getElementById('responseArea').classList.remove('hidden');
+        current.selectedAns = null;
+    }
+    function selectAns(i) {
+        if(current.selectedAns !== null) return;
+        const d = current.lesson.dialogues[current.dialogueIdx];
+        const o = d.options[i];
+        current.selectedAns = i; current.attempts++; state.totalAttempts++;
+        document.querySelectorAll('.option-btn').forEach((b,j) => { if(j!==i) b.disabled = true; });
+        const btn = document.getElementById(`opt${i}`);
+        if(o.correct) {
+            current.score++; state.totalScore++;
+            btn.classList.add('correct');
+            addMsg({speaker:'You', english:o.english, spanish:o.spanish});
+            document.getElementById('responseArea').classList.add('hidden');
+            showFeedback(true);
+            current.lesson.vocabulary.forEach(v => { if(!state.vocabLearned.includes(v.english)) state.vocabLearned.push(v.english); });
+        } else { btn.classList.add('incorrect'); showFeedback(false); }
+        document.getElementById('ldScore').textContent = `${current.score}/${current.attempts}`;
+        saveState();
+    }
+    function showFeedback(ok) {
+        const fb = document.getElementById('feedbackBar');
+        fb.classList.remove('hidden','correct','incorrect');
+        fb.classList.add(ok?'correct':'incorrect');
+        document.getElementById('fbIcon').textContent = ok?'🎉':'💪';
+        document.getElementById('fbText').textContent = ok?'¡Excelente!':'¡Inténtalo de nuevo!';
+        document.getElementById('continueBtn').classList.toggle('hidden', !ok);
+    }
+    function handleContinue() {
+        document.getElementById('feedbackBar').classList.add('hidden');
+        current.dialogueIdx++;
+        processDialogue();
+    }
+    function showConvComplete() {
+        if(!state.completedLessons.includes(current.lesson.id)) state.completedLessons.push(current.lesson.id);
+        state.lessonProgress[current.lesson.id] = 100;
+        saveState();
+        const fb = document.getElementById('feedbackBar');
+        fb.classList.remove('hidden','incorrect'); fb.classList.add('correct');
+        document.getElementById('fbIcon').textContent = '🏆';
+        document.getElementById('fbText').textContent = '¡Conversación completada!';
+        document.getElementById('continueBtn').textContent = 'Ver Vocabulario →';
+        document.getElementById('continueBtn').classList.remove('hidden');
+        document.getElementById('continueBtn').onclick = () => showTab('vocabTab');
+    }
+    function toggleTrans() { current.showTrans = !current.showTrans; document.getElementById('togTrans').classList.toggle('active', current.showTrans); document.querySelectorAll('.spanish').forEach(e => e.classList.toggle('show', current.showTrans)); }
+    function togglePron() { current.showPron = !current.showPron; document.getElementById('togPron').classList.toggle('active', current.showPron); document.querySelectorAll('.phonetic').forEach(e => e.classList.toggle('show', current.showPron)); }
+    function toggleAuto() { current.autoPlay = !current.autoPlay; document.getElementById('togAuto').classList.toggle('active', current.autoPlay); }
+    function changeSpeed() { current.speed = parseFloat(document.getElementById('speedCtrl').value); }
+
+    // Lesson Vocabulary
+    function renderLessonVocab() {
+        document.getElementById('lessonVocabGrid').innerHTML = current.lesson.vocabulary.map(v => `<div class="lv-card"><button class="lv-play" onclick="speak('${v.english.replace(/'/g,"\\'")}','en',this)">🔊</button><div class="lv-info"><div class="lv-en">${v.english}</div><div class="lv-es">${v.spanish}</div></div></div>`).join('');
+    }
+
+    // Exercises
+    function renderExercise() {
+        const ex = current.lesson.exercises[current.exIdx];
+        if(!ex) { showExComplete(); return; }
+        const box = document.getElementById('exerciseBox');
+        if(ex.type === 'fillBlank') {
+            box.innerHTML = `<div class="ex-header"><h3>✏️ Fill in the Blank</h3><span class="ex-progress">${current.exIdx+1}/${current.lesson.exercises.length}</span></div><p class="ex-question">${ex.question.replace('_____','<span class="blank">_____</span>')}</p><p class="ex-hint">💡 Hint: ${ex.hint}</p><div class="ex-options">${ex.options.map((o,i) => `<button class="ex-option" onclick="checkEx('${o}','${ex.answer}',this)" id="exOpt${i}">${o}</button>`).join('')}</div><div class="ex-feedback hidden" id="exFeedback"></div><div class="ex-nav"><button class="ex-nav-btn" onclick="prevEx()" ${current.exIdx===0?'disabled':''}>← Anterior</button><button class="ex-nav-btn primary hidden" onclick="nextEx()" id="nextExBtn">Siguiente →</button></div>`;
+        } else if(ex.type === 'matching') {
+            current.matchedPairs = []; current.matchSel = null;
+            const shuffled = [...ex.pairs].sort(() => Math.random()-0.5);
+            box.innerHTML = `<div class="ex-header"><h3>🔗 Match the Pairs</h3><span class="ex-progress">${current.exIdx+1}/${current.lesson.exercises.length}</span></div><div class="match-container"><div class="match-col"><h4>English</h4>${ex.pairs.map((p,i) => `<div class="match-item" onclick="selMatch('en',${i},'${p.english}')" id="mEn${i}" data-w="${p.english}">${p.english}</div>`).join('')}</div><div class="match-col"><h4>Español</h4>${shuffled.map((p,i) => `<div class="match-item" onclick="selMatch('es',${i},'${p.spanish}')" id="mEs${i}" data-w="${p.spanish}">${p.spanish}</div>`).join('')}</div></div><div class="ex-feedback hidden" id="exFeedback"></div><div class="ex-nav"><button class="ex-nav-btn" onclick="prevEx()" ${current.exIdx===0?'disabled':''}>← Anterior</button><button class="ex-nav-btn primary hidden" onclick="nextEx()" id="nextExBtn">Siguiente →</button></div>`;
+        }
+    }
+    function checkEx(sel, ans, btn) {
+        if(btn.disabled) return;
+        document.querySelectorAll('.ex-option').forEach(b => b.disabled = true);
+        if(sel === ans) { btn.classList.add('correct'); current.exScore++; showExFeedback(true, '¡Correcto! / Correct!'); }
+        else { btn.classList.add('incorrect'); document.querySelectorAll('.ex-option').forEach(b => { if(b.textContent === ans) b.classList.add('show-correct'); }); showExFeedback(false, `Respuesta: ${ans}`); }
+        document.getElementById('nextExBtn').classList.remove('hidden');
+    }
+    function selMatch(lang, idx, word) {
+        const ex = current.lesson.exercises[current.exIdx];
+        const el = document.getElementById(`m${lang==='en'?'En':'Es'}${idx}`);
+        if(el.classList.contains('matched')) return;
+        if(!current.matchSel) { current.matchSel = {lang, idx, word, el}; el.classList.add('selected'); }
+        else {
+            if(current.matchSel.lang === lang) { current.matchSel.el.classList.remove('selected'); current.matchSel = {lang, idx, word, el}; el.classList.add('selected'); }
+            else {
+                const enW = lang==='en' ? word : current.matchSel.word;
+                const esW = lang==='es' ? word : current.matchSel.word;
+                const pair = ex.pairs.find(p => p.english === enW && p.spanish === esW);
+                if(pair) {
+                    el.classList.add('matched'); current.matchSel.el.classList.add('matched');
+                    el.classList.remove('selected'); current.matchSel.el.classList.remove('selected');
+                    current.matchedPairs.push(pair);
+                    if(current.matchedPairs.length === ex.pairs.length) { current.exScore++; showExFeedback(true, '¡Todas correctas!'); document.getElementById('nextExBtn').classList.remove('hidden'); }
+                } else {
+                    el.classList.add('wrong'); current.matchSel.el.classList.add('wrong');
+                    setTimeout(() => { el.classList.remove('wrong','selected'); current.matchSel.el.classList.remove('wrong','selected'); }, 400);
+                }
+                current.matchSel = null;
+            }
+        }
+    }
+    function showExFeedback(ok, msg) {
+        const fb = document.getElementById('exFeedback');
+        fb.classList.remove('hidden','correct','incorrect');
+        fb.classList.add(ok?'correct':'incorrect');
+        fb.innerHTML = `<span>${ok?'✅':'❌'}</span><span>${msg}</span>`;
+    }
+    function nextEx() { current.exIdx++; renderExercise(); }
+    function prevEx() { if(current.exIdx > 0) { current.exIdx--; renderExercise(); } }
+    function showExComplete() {
+        const total = current.lesson.exercises.length;
+        const pct = Math.round((current.exScore/total)*100);
+        document.getElementById('exerciseBox').innerHTML = `<div style="text-align:center;padding:35px;"><div style="font-size:70px;margin-bottom:18px;">🎉</div><h2>¡Ejercicios Completados!</h2><p style="color:rgba(255,255,255,0.7);margin:12px 0;">Exercises Complete!</p><div style="font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#4ECDC4,#FF6B6B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:18px 0;">${current.exScore}/${total} (${pct}%)</div><p style="color:rgba(255,255,255,0.6);margin-bottom:25px;">${pct>=80?'¡Excelente!':pct>=60?'¡Buen trabajo!':'¡Sigue practicando!'}</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"><button class="continue-btn" onclick="current.exIdx=0;current.exScore=0;renderExercise();">🔄 Reintentar</button><button class="continue-btn" onclick="showView('lessons')">📚 Más Lecciones</button></div></div>`;
+        state.lessonProgress[current.lesson.id] = 100;
+        if(!state.completedLessons.includes(current.lesson.id)) state.completedLessons.push(current.lesson.id);
+        saveState();
+    }
+    </script>
+</body>
+</html>
